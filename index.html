@@ -48,32 +48,16 @@ body{
 @keyframes loadProgress { 0% { transform: translateX(-100%); } 100% { transform: translateX(0); } }
 @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-/* 2. Version Selector Page */
-#versionSelectorPage {
-  display: none; text-align: center; width: 100%; max-width: 500px;
-  animation: fadeIn 0.8s ease forwards;
-}
-.version-cards-wrap { display: flex; gap: 20px; margin-top: 25px; flex-wrap: wrap; }
-.version-card {
-  flex: 1; min-width: 200px; background: var(--card-bg);
-  border: 2px solid var(--card-border); backdrop-filter: blur(10px);
-  border-radius: 20px; padding: 30px 20px; cursor: pointer;
-  transition: all 0.3s ease; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-}
-.version-card:hover { transform: translateY(-8px) scale(1.03); border-color: var(--neon-blue); box-shadow: 0 0 25px var(--neon-blue); }
-.version-card h3 { margin: 0 0 10px; font-size: 24px; color: var(--neon-gold); }
-.version-card p { font-size: 13px; color: #ccc; margin: 0; }
-
-/* 3. Main Game Interface */
+/* Main Game Interface */
 #mainGamePage { display: none; width: 100%; max-width: 720px; animation: fadeIn 0.6s ease forwards; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
 .card {
   background: var(--card-bg); border-radius: 20px; padding: 22px; margin-bottom: 18px;
   border: 1px solid var(--card-border); backdrop-filter: blur(12px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4); overflow: hidden;
 }
-h1 { margin: 0; font-size: 26px; text-shadow: 0 0 10px var(--neon-red); }
+h1 { margin: 0; font-size: 24px; text-shadow: 0 0 10px var(--neon-red); }
 h2 { margin: 0 0 14px; font-size: 20px; color: var(--neon-blue); }
 
 .controls-group { margin-bottom: 14px; }
@@ -96,41 +80,41 @@ button.opt-btn.active { background: linear-gradient(135deg, var(--neon-red), #ff
 }
 
 /* Decorative Board Background */
-.boardWrap { max-width: 360px; margin: 15px auto; position: relative; }
+.boardWrap { max-width: 360px; margin: 15px auto; position: relative; width: 100%; }
 .board {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
-  background: rgba(0, 0, 0, 0.4); padding: 12px; border-radius: 20px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  background: rgba(0, 0, 0, 0.4); padding: 10px; border-radius: 20px;
   border: 2px solid var(--neon-blue); box-shadow: 0 0 20px rgba(0,210,255,0.2);
 }
 .cell {
   position: relative; aspect-ratio: 1; border: 2px solid var(--card-border);
   border-radius: 15px; background: rgba(255, 255, 255, 0.04);
   display: flex; align-items: center; justify-content: center; cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.25s ease; overflow: hidden;
 }
 .cell:hover { border-color: var(--neon-gold); background: rgba(255,255,255,0.08); transform: scale(1.02); }
 .cell:disabled { cursor: default; }
 
-.x { color: var(--neon-red); font-size: 52px; font-weight: 900; text-shadow: 0 0 12px var(--neon-red); }
-.o { color: var(--neon-blue); font-size: 52px; font-weight: 900; text-shadow: 0 0 12px var(--neon-blue); }
+.x { color: var(--neon-red); font-size: 45px; font-weight: 900; text-shadow: 0 0 12px var(--neon-red); }
+.o { color: var(--neon-blue); font-size: 45px; font-weight: 900; text-shadow: 0 0 12px var(--neon-blue); }
 
-/* Double Marks */
-.double-x-star { color: var(--neon-red); font-size: 65px; font-weight: 900; text-shadow: 0 0 15px var(--neon-red); }
+/* Custom Fixed Double Marks */
+.double-x-star { color: var(--neon-red); font-size: 55px; font-weight: 900; line-height: 1; text-shadow: 0 0 15px var(--neon-red); margin-top: 10px; }
 .double-o {
-  width: 46px; height: 46px; border: 5px solid var(--neon-blue); border-radius: 50%;
+  width: 40px; height: 40px; border: 4px solid var(--neon-blue); border-radius: 50%;
   position: relative; display: flex; align-items: center; justify-content: center;
   box-shadow: 0 0 15px var(--neon-blue);
 }
-.double-o:after { content: ""; width: 18px; height: 18px; border: 4px solid var(--neon-blue); border-radius: 50%; }
-.star-icon { position: absolute; right: 6px; top: 3px; font-size: 16px; color: var(--neon-gold); text-shadow: 0 0 8px var(--neon-gold); }
-.shared-text { position: absolute; right: 6px; bottom: 4px; font-size: 11px; color: #bbb; font-weight: bold; }
+.double-o:after { content: ""; width: 16px; height: 16px; border: 3px solid var(--neon-blue); border-radius: 50%; }
+.star-icon { position: absolute; right: 4px; top: 2px; font-size: 14px; color: var(--neon-gold); text-shadow: 0 0 8px var(--neon-gold); }
+.shared-text { position: absolute; right: 4px; bottom: 2px; font-size: 10px; color: #bbb; font-weight: bold; }
 
 .winLine {
   position: absolute; height: 6px; background: var(--neon-gold); border-radius: 10px;
   transform-origin: left center; pointer-events: none; z-index: 10;
   box-shadow: 0 0 15px var(--neon-gold);
 }
-.status { font-size: 20px; font-weight: bold; margin: 12px 0 5px; color: var(--neon-gold); text-align: center; }
+.status { font-size: 18px; font-weight: bold; margin: 12px 0 5px; color: var(--neon-gold); text-align: center; }
 .score { font-size: 15px; margin-bottom: 12px; text-align: center; color: #ccc; }
 .winText { text-align: center; font-weight: bold; margin-top: 12px; color: var(--neon-green); font-size: 16px; }
 
@@ -156,33 +140,12 @@ button.opt-btn.active { background: linear-gradient(135deg, var(--neon-red), #ff
   <div class="splash-loader"><div class="splash-progress"></div></div>
 </div>
 
-<!-- 2. Version Selection Page -->
-<div id="versionSelectorPage">
-  <h1>Choose Version</h1>
-  <p style="color:#aaa;">Select interface style to continue</p>
-  <div class="version-cards-wrap">
-    <div class="version-card" onclick="launchGame('old')">
-      <h3>1. Old</h3>
-      <p>Classic Layout & Standard Controls</p>
-    </div>
-    <div class="version-card" onclick="launchGame('new')">
-      <h3>2. New</h3>
-      <p>Gorgeous Animated & Modern UI</p>
-    </div>
-  </div>
-</div>
-
-<!-- 3. Main Game Interface -->
+<!-- 2. Main Game Interface -->
 <div id="mainGamePage">
 
   <div class="card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <div>
-        <h1>✕ Tic-Tac-Toe: Next Level ◯</h1>
-        <div style="color:#aaa; font-size:13px; margin-top:3px;">Created by Aftab Shahriar Shawon</div>
-      </div>
-      <button class="opt-btn" onclick="backToVersionSelect()">⚙ Change Version</button>
-    </div>
+    <h1>✕ Tic-Tac-Toe: Next Level ◯</h1>
+    <div style="color:#aaa; font-size:13px; margin-top:3px;">Created by Aftab Shahriar Shawon</div>
   </div>
 
   <div class="card">
@@ -253,13 +216,13 @@ const rulesData = {
     r2Title: "২. পয়েন্ট দেওয়ার নিয়ম",
     r2List: [
       "প্রথম চাল (ফাঁকা ঘরে): ১.০ পয়েন্ট",
-      "দ্বিতীয় চাল (নিজের ঘরে): ১.৫ পয়েন্ট (ডাবল ★ মার্ক হবে)",
+      "দ্বিতীয় চাল (নিজের ঘরে): ১.৫ পয়েন্ট (ডাবল * মার্ক হবে)",
       "শেয়ার্ড ঘর (প্রতিপক্ষের ঘরে): দুজনই ০.৫ পয়েন্ট করে পাবে (½ + ½)",
       "সীমা: একটি ঘর সর্বোচ্চ ২ বার ব্যবহার করা যাবে।"
     ],
     r3Title: "স্পেশাল আইকন",
     r3List: [
-      "Double X: লাল রঙের স্পেশাল স্টার (★) হয়ে যাবে।",
+      "Double X: লাল রঙের তারা (*) চিহ্ন হয়ে যাবে।",
       "Double O: জ্বলজ্বলে ডাবল রিং ও স্টার (★) হবে।"
     ]
   },
@@ -270,13 +233,13 @@ const rulesData = {
     r2Title: "2. Point System",
     r2List: [
       "First Use (Empty Box): 1.0 Point",
-      "Second Use (Same Player): 1.5 Points (Creates Double ★ Mark)",
+      "Second Use (Same Player): 1.5 Points (Creates Double * Mark)",
       "Shared Box (Opponent's Box): Both get 0.5 Point each (½ + ½)",
       "Limit: A box can be used maximum 2 times."
     ],
     r3Title: "Special Icons",
     r3List: [
-      "Double X: Converts into a Special Red Star (★).",
+      "Double X: Converts into a Special Red Star (*).",
       "Double O: Converts into a Glowing Double Ring with Star (★)."
     ]
   },
@@ -287,13 +250,13 @@ const rulesData = {
     r2Title: "2. अंक प्रणाली",
     r2List: [
       "पहला उपयोग (खाली बॉक्स): 1.0 अंक",
-      "दूसरा उपयोग (समान खिलाड़ी): 1.5 अंक (डबल ★ मार्क बनता है)",
+      "दूसरा उपयोग (समान खिलाड़ी): 1.5 अंक (डबल * मार्क बनता है)",
       "शेयर किया गया बॉक्स (विरोधी का बॉक्स): दोनों को 0.5 अंक मिलते हैं (½ + ½)",
       "सीमा: एक बॉक्स का अधिकतम 2 बार उपयोग किया जा सकता है।"
     ],
     r3Title: "विशेष प्रतीक",
     r3List: [
-      "Double X: एक विशेष लाल स्टार (★) में बदल जाता है।",
+      "Double X: एक विशेष लाल स्टार (*) में बदल जाता है।",
       "Double O: स्टार (★) के साथ एक चमकती हुई डबल रिंग में बदल जाता है।"
     ]
   },
@@ -304,13 +267,13 @@ const rulesData = {
     r2Title: "2. Система очков",
     r2List: [
       "Первое использование (пустая клетка): 1.0 балл",
-      "Второе использование (тот же игрок): 1.5 балла (создает знак Двойной ★)",
+      "Второе использование (тот же игрок): 1.5 балла (создает знак Двойной *)",
       "Общая клетка (клетка соперника): Оба получают по 0.5 балла (½ + ½)",
       "Лимит: Клетку можно использовать максимум 2 раза."
     ],
     r3Title: "Специальные значки",
     r3List: [
-      "Double X: Превращается в специальную красную звезду (★).",
+      "Double X: Превращается в специальную красную звезду (*).",
       "Double O: Превращается в светящееся двойное кольцо со звездой (★)."
     ]
   },
@@ -321,13 +284,13 @@ const rulesData = {
     r2Title: "2. Sistema de Puntos",
     r2List: [
       "Primer uso (Casilla vacía): 1.0 Punto",
-      "Segundo uso (Mismo jugador): 1.5 Puntos (Crea la marca Doble ★)",
+      "Segundo uso (Mismo jugador): 1.5 Puntos (Crea la marca Doble *)",
       "Casilla compartida (Casilla del oponente): Ambos obtienen 0.5 Puntos (½ + ½)",
       "Límite: Una casilla se puede usar máximo 2 veces."
     ],
     r3Title: "Iconos Especiales",
     r3List: [
-      "Double X: Se convierte en una Estrella Roja Especial (★).",
+      "Double X: Se convierte en una Estrella Roja Especial (*).",
       "Double O: Se convierte en un Anillo Doble Brillante con Estrella (★)."
     ]
   }
@@ -358,13 +321,14 @@ function changeLanguage(lang) {
   document.getElementById('rulesContainer').innerHTML = html;
 }
 
-// Splash screen timer -> Version selection
+// Splash screen timer
 setTimeout(() => {
   document.getElementById('splashScreen').style.display = 'none';
-  document.getElementById('versionSelectorPage').style.display = 'block';
+  document.getElementById('mainGamePage').style.display = 'block';
+  changeLanguage('bn');
+  newGame();
 }, 5000);
 
-let selectedVersion = 'new';
 let opponentMode = 'bot', botLevel = 3;
 let human = 'X', computer = 'O', turn = 'X', gameOver = true;
 let board = Array(9).fill('');
@@ -377,19 +341,6 @@ const lines = [
  [0,3,6],[1,4,7],[2,5,8],
  [0,4,8],[2,4,6]
 ];
-
-function launchGame(ver) {
-  selectedVersion = ver;
-  document.getElementById('versionSelectorPage').style.display = 'none';
-  document.getElementById('mainGamePage').style.display = 'block';
-  changeLanguage('bn');
-  newGame();
-}
-
-function backToVersionSelect() {
-  document.getElementById('mainGamePage').style.display = 'none';
-  document.getElementById('versionSelectorPage').style.display = 'block';
-}
 
 function setOpponent(mode) {
   opponentMode = mode;
@@ -449,11 +400,11 @@ function render() {
 
     if(uses[i] === 2) {
       if(board[i] === 'X') {
-        c.innerHTML = '<span class="double-x-star">★</span>';
+        c.innerHTML = '<span class="double-x-star">*</span>';
       } else if(board[i] === 'O') {
         c.innerHTML = '<span class="double-o"></span><span class="star-icon">★</span>';
       } else {
-        c.innerHTML = '<span class="x" style="font-size:30px;position:absolute;left:10%">X</span><span class="o" style="font-size:30px;position:absolute;right:10%">O</span><span class="shared-text">½+½</span>';
+        c.innerHTML = '<span class="x" style="font-size:26px;position:absolute;left:8%">X</span><span class="o" style="font-size:26px;position:absolute;right:8%">O</span><span class="shared-text">½+½</span>';
       }
     }
     b.appendChild(c);
@@ -578,4 +529,4 @@ function drawLine(indexes) {
 }
 </script>
 </body>
-          </html>
+  </html>
