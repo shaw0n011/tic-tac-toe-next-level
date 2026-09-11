@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic-Tac-Toe: Next Level</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:Arial,Helvetica,sans-serif;
+  background:linear-gradient(135deg,#eef2f7,#dce4ee);
+  color:#151515;
+}
+.container{max-width:720px;margin:auto;padding:18px}
+.card{
+  background:#fff;border-radius:20px;padding:22px;margin-bottom:16px;
+  box-shadow:0 8px 25px rgba(0,0,0,.10);
+}
+h1{margin:0 0 5px;font-size:30px}
+h2{margin:0 0 14px;font-size:23px}
+.subtitle{color:#666;font-size:15px}
+.creator{font-weight:bold;margin-top:12px}
+.badge{
+  display:inline-block;margin-top:10px;padding:7px 12px;
+  border-radius:999px;background:#f1f3f5;font-weight:bold
+}
+.controls{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}
+button{
+  font-size:16px;padding:10px 15px;border-radius:10px;
+  border:1px solid #888;background:#fafafa;cursor:pointer
+}
+button:hover{background:#f0f0f0}
+.status{font-size:22px;font-weight:bold;margin:13px 0 5px}
+.score{font-size:18px;margin-bottom:16px}
+.boardWrap{max-width:390px;margin:auto;position:relative}
+.board{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:9px;
+}
+.cell{
+  position:relative;aspect-ratio:1;border:3px solid #222;
+  border-radius:13px;background:#fff;display:flex;
+  align-items:center;justify-content:center;cursor:pointer;
+}
+.cell:disabled{cursor:default}
+.x{color:#e00000;font-size:61px;font-weight:900;line-height:1}
+.o{color:#145dcc;font-size:61px;font-weight:900;line-height:1}
+.double-x{font-size:53px}
+.double-x .star{font-size:24px;position:absolute;right:9px;top:6px;color:#111}
+.double-o{
+  width:57px;height:57px;border:8px solid #145dcc;border-radius:50%;
+  position:relative
+}
+.double-o:after{
+  content:"";position:absolute;width:27px;height:27px;
+  border:6px solid #145dcc;border-radius:50%;
+  left:50%;top:50%;transform:translate(-50%,-50%);
+}
+.star{
+  position:absolute;right:8px;top:5px;font-size:24px;
+  color:#111;font-weight:bold;
+}
+.double-x-star{
+  color:#e00000;
+  font-size:86px;
+  font-weight:900;
+  line-height:1;
+  text-shadow:0 1px 0 rgba(0,0,0,.08);
+}
+.shared{
+  position:absolute;right:7px;bottom:5px;font-size:12px;
+  color:#555;font-weight:bold;
+}
+.winLine{
+  position:absolute;height:8px;background:#111;border-radius:10px;
+  transform-origin:left center;pointer-events:none;
+}
+.winLine:after{
+  content:"";position:absolute;right:-2px;top:50%;
+  transform:translateY(-50%);
+  border-top:13px solid transparent;border-bottom:13px solid transparent;
+  border-left:22px solid #111;
+}
+.winText{text-align:center;font-weight:bold;margin-top:13px}
+.rules p,.rules li{line-height:1.55}
+.rule{
+  background:#f7f8fa;border:1px solid #e1e4e8;
+  border-radius:13px;padding:13px 15px;margin:10px 0
+}
+.example{font-weight:bold}
+.xtext{color:#e00000}.otext{color:#145dcc}
+.footer{text-align:center;color:#666;font-size:13px}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="card">
+    <h1>✕ Tic-Tac-Toe: Next Level ◯</h1>
+    <div class="subtitle">A new version of the classic Tic-Tac-Toe game</div>
+    <div class="creator">Created by Aftab Shahriar Shawon</div>
+    <div class="badge">✕ X = Red &nbsp;&nbsp; ◯ O = Blue</div>
+  </div>
+
+  <div class="card">
+    <h2>🎮 Play vs Computer</h2>
+    <p>Choose your sign. The computer will play the other sign.</p>
+
+    <div class="controls">
+      <button onclick="startGame('X')">Play as X</button>
+      <button onclick="startGame('O')">Play as O</button>
+      <button onclick="newGame()">New Game</button>
+    </div>
+
+    <div id="status" class="status">Choose X or O to start.</div>
+    <div class="score">
+      Score — You: <b id="youScore">0</b> | Computer: <b id="cpuScore">0</b>
+    </div>
+
+    <div id="boardWrap" class="boardWrap">
+      <div id="board" class="board"></div>
+      <div id="line"></div>
+    </div>
+    <div id="winText" class="winText"></div>
+  </div>
+
+  <div class="card rules">
+    <h2>📜 Game Rules</h2>
+
+    <div class="rule">
+      <b>Rule 1 — Make a Line</b>
+      <p>
+        A player must have their own sign in <b>3 connected boxes</b>:
+        horizontal, vertical, or diagonal.
+      </p>
+    </div>
+
+    <div class="rule">
+      <b>Rule 2 — Point System</b>
+      <ul>
+        <li>First use of a box = <b>1 point</b>.</li>
+        <li>If the same player uses that box a second time = <b>1.5 points</b> for that box.</li>
+        <li>If the other player uses it second, both players get <b>0.5 point</b> in that box.</li>
+        <li><b>Third use is strictly forbidden.</b></li>
+      </ul>
+    </div>
+
+    <div class="rule">
+      <b>Rule 3 — How to Win</b>
+      <p>
+        Only the <b>3 boxes of the connected winning line</b> are counted.
+        Points from other boxes do not matter.
+      </p>
+      <p class="example">
+        0.5 + 1 + 1 = 2.5 → ❌ No win<br>
+        1 + 1 + 1 = 3 → ✅ Win
+      </p>
+    </div>
+
+    <div class="rule">
+      <b>Special Box Marks</b>
+      <p>
+        <span class="xtext"><b>Double X:</b></span>
+        when X uses a box twice, the X changes into a large red ★ mark.
+      </p>
+      <p>
+        <span class="otext"><b>Double O:</b></span>
+        when O uses a box twice, it becomes a double-circle mark with ★.
+      </p>
+      <p><b>Shared box:</b> if X and O each use the same box once, both signs appear separately and the box shows <b>½ + ½</b>.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    Tic-Tac-Toe: Next Level © 2026 — Aftab Shahriar Shawon
+  </div>
+</div>
+
+<script>
+const lines=[
+ [0,1,2],[3,4,5],[6,7,8],
+ [0,3,6],[1,4,7],[2,5,8],
+ [0,4,8],[2,4,6]
+];
+
+let human='X', computer='O', turn='X', gameOver=true;
+let board=Array(9).fill('');
+let uses=Array(9).fill(0);
+let pts={X:Array(9).fill(0),O:Array(9).fill(0)};
+let round=0;
+
+function startGame(sign){
+  human=sign; computer=sign==='X'?'O':'X';
+  newGame();
+}
+
+function newGame(){
+  round++;
+  board=Array(9).fill('');
+  uses=Array(9).fill(0);
+  pts={X:Array(9).fill(0),O:Array(9).fill(0)};
+  turn='X'; gameOver=false;
+  document.getElementById('winText').textContent='';
+  document.getElementById('line').innerHTML='';
+  render();
+
+  if(turn===human) setStatus('Your turn.');
+  else{
+    setStatus('Computer is thinking...');
+    const r=round;
+    setTimeout(()=>{if(r===round&&!gameOver)computerMove()},400);
+  }
+}
+
+function setStatus(text){
+  document.getElementById('status').textContent=text;
+}
+
+function score(p){
+  return pts[p].reduce((a,b)=>a+b,0);
+}
+
+function render(){
+  const b=document.getElementById('board');
+  b.innerHTML='';
+
+  for(let i=0;i<9;i++){
+    const c=document.createElement('button');
+    c.className='cell';
+    c.disabled=gameOver || turn!==human || uses[i]>=2;
+    c.onclick=()=>humanMove(i);
+
+    if(uses[i]===1){
+      c.innerHTML = board[i]==='X'
+        ? '<span class="x">X</span>'
+        : '<span class="o">O</span>';
+    }
+
+    if(uses[i]===2){
+      if(board[i]==='X'){
+        // Same player used the box twice: X + star.
+        c.innerHTML='<span class="double-x-star">*</span>';
+      }else if(board[i]==='O'){
+        // Same player used the box twice: double O + star.
+        c.innerHTML='<span class="double-o"></span><span class="star">★</span>';
+      }else{
+        // Both players used the box once: show X and O separately.
+        c.innerHTML='<span class="x" style="font-size:48px;position:absolute;left:25%">X</span><span class="o" style="font-size:48px;position:absolute;right:25%">O</span><span class="shared">½+½</span>';
+      }
+    }
+
+    b.appendChild(c);
+  }
+
+  document.getElementById('youScore').textContent=score(human);
+  document.getElementById('cpuScore').textContent=score(computer);
+}
+
+function place(i,p){
+  if(uses[i]>=2) return false;
+
+  uses[i]++;
+
+  if(uses[i]===1){
+    board[i]=p;
+    pts[p][i]=1;
+  }else{
+    if(board[i]===p){
+      pts[p][i]=1.5;
+    }else{
+      board[i]='XO';
+      pts.X[i]=0.5;
+      pts.O[i]=0.5;
+    }
+  }
+  return true;
+}
+
+function hasSign(i,p){
+  return board[i]===p || board[i]==='XO';
+}
+
+function winningLine(p){
+  for(const line of lines){
+    if(line.every(i=>hasSign(i,p))){
+      const total=pts[p][line[0]]+pts[p][line[1]]+pts[p][line[2]];
+      if(total>=3) return {line,total};
+    }
+  }
+  return null;
+}
+
+function finish(p,w){
+  gameOver=true;
+  setStatus(p===human?'You win! 🏆':'Computer wins! 🤖');
+  document.getElementById('winText').textContent=
+    'Winning line: '+w.line.map(x=>x+1).join(' → ')+'  |  Line points: '+w.total;
+  render();
+  setTimeout(()=>drawLine(w.line),50);
+}
+
+function afterMove(p){
+  const w=winningLine(p);
+  if(w){finish(p,w);return true}
+
+  if(uses.every(x=>x===2)){
+    gameOver=true;
+    setStatus('Draw — every box has been used twice.');
+    render();
+    return true;
+  }
+  return false;
+}
+
+function humanMove(i){
+  if(gameOver || turn!==human || uses[i]>=2)return;
+
+  place(i,human);
+  if(afterMove(human))return;
+
+  turn=computer;
+  setStatus('Computer is thinking...');
+  render();
+
+  const r=round;
+  setTimeout(()=>{if(r===round&&!gameOver)computerMove()},400);
+}
+
+function save(){
+  return {
+    board:board.slice(),uses:uses.slice(),
+    X:pts.X.slice(),O:pts.O.slice()
+  };
+}
+
+function load(s){
+  board=s.board;uses=s.uses;
+  pts={X:s.X,O:s.O};
+}
+
+function testMove(i,p){
+  const s=save();
+  place(i,p);
+  const w=winningLine(p);
+  load(s);
+  return w;
+}
+
+function computerMove(){
+  if(gameOver)return;
+
+  const available=[];
+  for(let i=0;i<9;i++) if(uses[i]<2) available.push(i);
+  if(!available.length)return;
+
+  let move=available.find(i=>testMove(i,computer));
+  if(move===undefined) move=available.find(i=>testMove(i,human));
+  if(move===undefined && uses[4]<2) move=4;
+
+  if(move===undefined){
+    const order=[0,2,6,8,1,3,5,7];
+    move=order.find(i=>uses[i]<2);
+  }
+  if(move===undefined)move=available[0];
+
+  place(move,computer);
+  if(afterMove(computer))return;
+
+  turn=human;
+  setStatus('Your turn.');
+  render();
+}
+
+function drawLine(indexes){
+  const wrap=document.getElementById('boardWrap');
+  const cells=[...document.querySelectorAll('.cell')];
+  if(cells.length!==9)return;
+
+  const a=cells[indexes[0]].getBoundingClientRect();
+  const z=cells[indexes[2]].getBoundingClientRect();
+  const r=wrap.getBoundingClientRect();
+
+  const x1=a.left+a.width/2-r.left;
+  const y1=a.top+a.height/2-r.top;
+  const x2=z.left+z.width/2-r.left;
+  const y2=z.top+z.height/2-r.top;
+
+  const dx=x2-x1,dy=y2-y1;
+  const length=Math.sqrt(dx*dx+dy*dy);
+  const angle=Math.atan2(dy,dx)*180/Math.PI;
+
+  const l=document.getElementById('line');
+  l.innerHTML='';
+  const el=document.createElement('div');
+  el.className='winLine';
+  el.style.left=x1+'px';
+  el.style.top=(y1-4)+'px';
+  el.style.width=length+'px';
+  el.style.transform='rotate('+angle+'deg)';
+  l.appendChild(el);
+}
+</script>
+</body>
+</html>
