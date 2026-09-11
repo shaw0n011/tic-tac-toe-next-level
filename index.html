@@ -3,551 +3,525 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tic-Tac-Toe Arena with AI Fairy Prince</title>
+<title>Tic-Tac-Toe: Next Level</title>
 <style>
 :root {
-  --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  --card-bg: rgba(255, 255, 255, 0.07);
-  --card-border: rgba(255, 255, 255, 0.18);
-  --neon-red: #ff3366;
-  --neon-blue: #00d2ff;
-  --neon-gold: #ffea00;
-  --neon-green: #00ff88;
+--bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+--card-bg: rgba(255, 255, 255, 0.07);
+--card-border: rgba(255, 255, 255, 0.18);
+--neon-red: #ff3366;
+--neon-blue: #00d2ff;
+--neon-gold: #ffea00;
+--neon-green: #00ff88;
 }
 
 *{box-sizing:border-box}
 body{
-  margin:0;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--bg-gradient);
-  color:#fff;min-height:100vh;
-  display:flex;justify-content:center;align-items:center;padding:15px;
-  overflow-x:hidden; position: relative;
+margin:0;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background: var(--bg-gradient);
+color:#fff;min-height:100vh;
+display:flex;justify-content:center;align-items:center;padding:15px;
+overflow-x:hidden;
 }
 
-/* Splash Screen */
+/* 1. Splash Screen & Logo */
 #splashScreen {
-  position: fixed;top:0;left:0;width:100vw;height:100vh;
-  background: #0a0a12;
-  display:flex;flex-direction:column;justify-content:center;align-items:center;
-  z-index: 99999;
-  animation: fadeOut 0.8s ease 3.5s forwards;
+position: fixed;top:0;left:0;width:100vw;height:100vh;
+background: #0a0a12;
+display:flex;flex-direction:column;justify-content:center;align-items:center;
+z-index: 9999;
+animation: fadeOut 0.8s ease 4.5s forwards;
 }
 .logo-box {
-  position: relative;width: 100px;height: 100px;
-  background: linear-gradient(45deg, var(--neon-red), var(--neon-blue));
-  border-radius: 20px;display:flex;justify-content:center;align-items:center;
-  box-shadow: 0 0 30px rgba(0,210,255,0.6);
-  animation: rotateLogo 4s infinite linear;
+position: relative;width: 110px;height: 110px;
+background: linear-gradient(45deg, var(--neon-red), var(--neon-blue));
+border-radius: 24px;display:flex;justify-content:center;align-items:center;
+box-shadow: 0 0 35px rgba(0,210,255,0.6);
+animation: pulseLogo 1.5s infinite alternate, rotateLogo 4s infinite linear;
 }
-.logo-icon { font-size: 45px; }
-.splash-title { margin-top: 20px; font-size: 24px; font-weight: 800; letter-spacing: 2px; text-shadow: 0 0 10px var(--neon-blue); }
-.splash-loader { margin-top: 15px; width: 130px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow:hidden; }
-.splash-progress { width: 100%; height: 100%; background: var(--neon-green); animation: loadProgress 3.5s linear forwards; }
+.logo-icon { font-size: 50px; }
+.splash-title { margin-top: 25px; font-size: 28px; font-weight: 800; letter-spacing: 2px; text-shadow: 0 0 10px var(--neon-blue); }
+.splash-loader { margin-top: 15px; width: 140px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow:hidden; }
+.splash-progress { width: 100%; height: 100%; background: var(--neon-green); animation: loadProgress 4.5s linear forwards; }
 
 @keyframes rotateLogo { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.1) rotate(180deg); } 100% { transform: scale(1) rotate(360deg); } }
 @keyframes loadProgress { 0% { transform: translateX(-100%); } 100% { transform: translateX(0); } }
 @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-/* Main Game Page */
-#mainGamePage { display: none; width: 100%; max-width: 650px; animation: fadeIn 0.6s ease forwards; }
+/* Main Game Interface */
+#mainGamePage { display: none; width: 100%; max-width: 720px; animation: fadeIn 0.6s ease forwards; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
 .card {
-  background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 15px;
-  border: 1px solid var(--card-border); backdrop-filter: blur(12px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+background: var(--card-bg); border-radius: 20px; padding: 22px; margin-bottom: 18px;
+border: 1px solid var(--card-border); backdrop-filter: blur(12px);
+box-shadow: 0 8px 30px rgba(0,0,0,0.4); overflow: hidden;
 }
-h1 { margin: 0; font-size: 22px; text-shadow: 0 0 10px var(--neon-red); }
-h2 { margin: 0 0 12px; font-size: 18px; color: var(--neon-blue); }
+h1 { margin: 0; font-size: 24px; text-shadow: 0 0 10px var(--neon-red); }
+h2 { margin: 0 0 14px; font-size: 20px; color: var(--neon-blue); }
 
-.controls-group { margin-bottom: 12px; }
-.controls-label { font-size: 12px; color: #aaa; margin-bottom: 5px; }
-.controls { display: flex; gap: 6px; flex-wrap: wrap; }
+.controls-group { margin-bottom: 14px; }
+.controls-label { font-size: 13px; color: #aaa; margin-bottom: 6px; }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
 
 button.opt-btn {
-  font-size: 12px; padding: 6px 12px; border-radius: 10px;
-  border: 1px solid var(--card-border); background: rgba(0,0,0,0.3);
-  color: #fff; cursor: pointer; transition: all 0.25s ease;
+font-size: 14px; padding: 9px 15px; border-radius: 12px;
+border: 1px solid var(--card-border); background: rgba(0,0,0,0.3);
+color: #fff; cursor: pointer; transition: all 0.25s ease;
 }
 button.opt-btn:hover { background: rgba(255,255,255,0.15); }
 button.opt-btn.active { background: linear-gradient(135deg, var(--neon-red), #ff0055); border: none; font-weight: bold; box-shadow: 0 0 12px var(--neon-red); }
 
-/* Game Board */
-.boardWrap { max-width: 320px; margin: 15px auto; position: relative; width: 100%; }
+/* Language Selector Dropdown */
+.lang-select {
+background: rgba(0, 0, 0, 0.5); color: var(--neon-gold); border: 1px solid var(--neon-blue);
+padding: 6px 12px; border-radius: 10px; font-weight: bold; font-size: 14px; outline: none;
+cursor: pointer;
+}
+
+/* Decorative Board Background */
+.boardWrap { max-width: 360px; margin: 15px auto; position: relative; width: 100%; }
 .board {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-  background: rgba(0, 0, 0, 0.4); padding: 10px; border-radius: 20px;
-  border: 2px solid var(--neon-blue); box-shadow: 0 0 20px rgba(0,210,255,0.2);
+display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+background: rgba(0, 0, 0, 0.4); padding: 10px; border-radius: 20px;
+border: 2px solid var(--neon-blue); box-shadow: 0 0 20px rgba(0,210,255,0.2);
 }
 .cell {
-  position: relative; aspect-ratio: 1; border: 2px solid var(--card-border);
-  border-radius: 15px; background: rgba(255, 255, 255, 0.04);
-  display: flex; align-items: center; justify-content: center; cursor: pointer;
-  transition: all 0.25s ease; overflow: hidden;
+position: relative; aspect-ratio: 1; border: 2px solid var(--card-border);
+border-radius: 15px; background: rgba(255, 255, 255, 0.04);
+display: flex; align-items: center; justify-content: center; cursor: pointer;
+transition: all 0.25s ease; overflow: hidden;
 }
 .cell:hover { border-color: var(--neon-gold); background: rgba(255,255,255,0.08); transform: scale(1.02); }
+.cell:disabled { cursor: default; }
 
-.x { color: var(--neon-red); font-size: 40px; font-weight: 900; text-shadow: 0 0 12px var(--neon-red); }
-.o { color: var(--neon-blue); font-size: 40px; font-weight: 900; text-shadow: 0 0 12px var(--neon-blue); }
-.double-x-star { color: var(--neon-red); font-size: 48px; font-weight: 900; text-shadow: 0 0 15px var(--neon-red); }
+.x { color: var(--neon-red); font-size: 45px; font-weight: 900; text-shadow: 0 0 12px var(--neon-red); }
+.o { color: var(--neon-blue); font-size: 45px; font-weight: 900; text-shadow: 0 0 12px var(--neon-blue); }
 
-.status { font-size: 16px; font-weight: bold; margin: 10px 0 5px; color: var(--neon-gold); text-align: center; }
-.score { font-size: 14px; margin-bottom: 10px; text-align: center; color: #ccc; }
-
-.rules-box { font-size: 13px; line-height: 1.6; color: #ddd; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; border-left: 3px solid var(--neon-gold); }
-
-/* REALISTIC PRINCE WITH INLINE SPEECH BUBBLE */
-#fairyContainer {
-  position: fixed; top: 100px; left: 20px; z-index: 9999;
-  cursor: pointer; touch-action: none;
-  display: flex; flex-direction: column; align-items: center;
+/* Custom Fixed Double Marks */
+.double-x-star { color: var(--neon-red); font-size: 55px; font-weight: 900; line-height: 1; text-shadow: 0 0 15px var(--neon-red); margin-top: 10px; }
+.double-o {
+width: 40px; height: 40px; border: 4px solid var(--neon-blue); border-radius: 50%;
+position: relative; display: flex; align-items: center; justify-content: center;
+box-shadow: 0 0 15px var(--neon-blue);
 }
-#fairyCanvas {
-  width: 90px; height: 110px;
-  filter: drop-shadow(0 5px 15px rgba(0, 210, 255, 0.6));
-}
+.double-o:after { content: ""; width: 16px; height: 16px; border: 3px solid var(--neon-blue); border-radius: 50%; }
+.star-icon { position: absolute; right: 4px; top: 2px; font-size: 14px; color: var(--neon-gold); text-shadow: 0 0 8px var(--neon-gold); }
+.shared-text { position: absolute; right: 4px; bottom: 2px; font-size: 10px; color: #bbb; font-weight: bold; }
 
-/* INSTANT SPEECH BUBBLE (NO SEPARATE MODAL WINDOW) */
-.speech-bubble {
-  position: absolute; bottom: 115px; left: 50%; transform: translateX(-50%);
-  background: rgba(15, 23, 42, 0.95); border: 2px solid var(--neon-gold);
-  border-radius: 15px; padding: 10px 14px; min-width: 220px; max-width: 280px;
-  box-shadow: 0 0 20px rgba(255,234,0,0.4); backdrop-filter: blur(10px);
-  text-align: center; pointer-events: auto; animation: popIn 0.3s ease;
+.winLine {
+position: absolute; height: 6px; background: var(--neon-gold); border-radius: 10px;
+transform-origin: left center; pointer-events: none; z-index: 10;
+box-shadow: 0 0 15px var(--neon-gold);
 }
-.speech-bubble::after {
-  content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
-  border-width: 10px 10px 0; border-style: solid; border-color: var(--neon-gold) transparent;
-  display: block; width: 0;
+.status { font-size: 18px; font-weight: bold; margin: 12px 0 5px; color: var(--neon-gold); text-align: center; }
+.score { font-size: 15px; margin-bottom: 12px; text-align: center; color: #ccc; }
+.winText { text-align: center; font-weight: bold; margin-top: 12px; color: var(--neon-green); font-size: 16px; }
+
+/* Rules Cards */
+.rule-box {
+background: rgba(0, 0, 0, 0.3); border-left: 4px solid var(--neon-blue);
+border-radius: 12px; padding: 12px 15px; margin: 10px 0; font-size: 14px;
 }
-@keyframes popIn { from { opacity: 0; transform: translateX(-50%) scale(0.8); } to { opacity: 1; transform: translateX(-50%) scale(1); } }
+.rule-box b { color: var(--neon-gold); display: block; margin-bottom: 4px; }
+.rule-box ul { margin: 5px 0; padding-left: 18px; }
+.rule-box li { margin-bottom: 4px; }
 
-.bubble-text { font-size: 13px; color: #fff; line-height: 1.3; margin-bottom: 8px; font-weight: 500; }
-.bubble-input-wrap { display: flex; gap: 4px; }
-.bubble-input { flex: 1; padding: 6px 10px; border-radius: 15px; border: 1px solid var(--card-border); background: rgba(255,255,255,0.15); color: #fff; font-size: 12px; outline: none; }
-.bubble-btn { background: var(--neon-blue); color: #000; font-weight: bold; border: none; padding: 6px 10px; border-radius: 15px; cursor: pointer; font-size: 12px; }
-.bubble-mic { background: var(--neon-red); color: #fff; border: none; padding: 6px 10px; border-radius: 15px; cursor: pointer; font-size: 12px; }
-
-.footer { text-align: center; color: #888; font-size: 12px; margin-top: 15px; }
+.footer { text-align: center; color: #888; font-size: 13px; margin-top: 15px; }
 </style>
 </head>
 
 <body>
 
-<!-- Splash Screen -->
+<!-- 1. Splash Screen -->
 <div id="splashScreen">
-  <div class="logo-box"><span class="logo-icon">✕◯</span></div>
-  <div class="splash-title">TIC TAC TOE ARENA</div>
-  <div class="splash-loader"><div class="splash-progress"></div></div>
+<div class="logo-box"><span class="logo-icon">✕◯</span></div>
+<div class="splash-title">NEXT LEVEL</div>
+<div class="splash-loader"><div class="splash-progress"></div></div>
 </div>
 
-<!-- REALISTIC PRINCE WITH DIRECT INSTANT SPEECH BUBBLE -->
-<div id="fairyContainer">
-  <div class="speech-bubble" id="speechBubble">
-    <div class="bubble-text" id="fairyAnswerText">হাই শাওন! প্রিন্সে টাচ করে প্রশ্ন করো বা বলো! 😄</div>
-    <div class="bubble-input-wrap">
-      <input type="text" id="userQueryInput" class="bubble-input" placeholder="প্রশ্ন বা জোকস লিখুন..." onkeydown="if(event.key==='Enter') askOpenAI()">
-      <button class="bubble-btn" onclick="askOpenAI()">Ask</button>
-      <button class="bubble-mic" onclick="startVoiceRecognition()">🎙️</button>
-    </div>
-  </div>
-  <canvas id="fairyCanvas" width="180" height="220" onclick="interactWithFairy()"></canvas>
-</div>
-
-<!-- Main Game Page -->
+<!-- 2. Main Game Interface -->
 <div id="mainGamePage">
-  <div class="card">
-    <h1>✕ Tic-Tac-Toe Arena ◯</h1>
-    <div style="color:#aaa; font-size:12px; margin-top:2px;">Created by Aftab Shahriar Shawon</div>
-  </div>
 
-  <div class="card">
-    <h2>🎮 Game Control</h2>
+<div class="card">
+<h1>✕ Tic-Tac-Toe: Next Level ◯</h1>
+<div style="color:#aaa; font-size:13px; margin-top:3px;">Created by Aftab Shahriar Shawon</div>
+</div>
 
-    <!-- 8 LANGUAGES SELECTION -->
-    <div class="controls-group">
-      <div class="controls-label">🌐 Select Language:</div>
-      <div class="controls" id="langButtons">
-        <button class="opt-btn active" onclick="changeLanguage('bn')">বাংলা</button>
-        <button class="opt-btn" onclick="changeLanguage('en')">English</button>
-        <button class="opt-btn" onclick="changeLanguage('ru')">Русский</button>
-        <button class="opt-btn" onclick="changeLanguage('es')">Español</button>
-        <button class="opt-btn" onclick="changeLanguage('zh')">中文</button>
-        <button class="opt-btn" onclick="changeLanguage('hi')">हिन्दी</button>
-        <button class="opt-btn" onclick="changeLanguage('ar')">العربية</button>
-        <button class="opt-btn" onclick="changeLanguage('ja')">日本語</button>
-      </div>
-    </div>
+<div class="card">
+<h2>🎮 Game Controls</h2>
 
-    <div class="controls-group">
-      <div class="controls-label" id="lblMode">Game Mode:</div>
-      <div class="controls">
-        <button id="verClassic" class="opt-btn" onclick="setVersion('classic')">🕹️ Classic</button>
-        <button id="verNext" class="opt-btn active" onclick="setVersion('nextlevel')">🚀 Next Level</button>
-      </div>
-    </div>
+<div class="controls-group">
+<div class="controls-label">Opponent:</div>
+<div class="controls">
+<button id="modeBot" class="opt-btn active" onclick="setOpponent('bot')">🤖 vs Computer</button>
+<button id="modeFriend" class="opt-btn" onclick="setOpponent('friend')">👥 vs Friend</button>
+</div>
+</div>
 
-    <div class="controls-group">
-      <div class="controls-label" id="lblOpponent">Opponent:</div>
-      <div class="controls">
-        <button id="modeBot" class="opt-btn active" onclick="setOpponent('bot')">🤖 vs Computer</button>
-        <button id="modeFriend" class="opt-btn" onclick="setOpponent('friend')">👥 vs Friend</button>
-      </div>
-    </div>
+<div id="botDiffGroup" class="controls-group">
+<div class="controls-label">Bot Level:</div>
+<div class="controls">
+<button id="diff1" class="opt-btn" onclick="setDifficulty(1)">Easy</button>
+<button id="diff2" class="opt-btn" onclick="setDifficulty(2)">Medium</button>
+<button id="diff3" class="opt-btn active" onclick="setDifficulty(3)">Hard</button>
+</div>
+</div>
 
-    <div class="controls-group">
-      <div class="controls-label" id="lblAction">Action:</div>
-      <div class="controls">
-        <button class="opt-btn" onclick="startGame('X')">Play X</button>
-        <button class="opt-btn" onclick="startGame('O')">Play O</button>
-        <button class="opt-btn" style="border-color:var(--neon-red)" onclick="newGame()">Reset</button>
-      </div>
-    </div>
+<div class="controls-group">
+<div class="controls-label">Start Match:</div>
+<div class="controls">
+<button class="opt-btn" onclick="startGame('X')">Play as X</button>
+<button class="opt-btn" onclick="startGame('O')">Play as O</button>
+<button class="opt-btn" style="border-color:var(--neon-red)" onclick="newGame()">Reset Match</button>
+</div>
+</div>
 
-    <div id="status" class="status">Choose X or O to start</div>
-    <div class="score"><span id="lblScore">Score</span> — <span id="p1Name">You</span>: <b id="youScore">0</b> | <span id="p2Name">Computer</span>: <b id="cpuScore">0</b></div>
+<div id="status" class="status">Choose X or O to start</div>
+<div class="score">Score — <span id="p1Name">You</span>: <b id="youScore">0</b> | <span id="p2Name">Computer</span>: <b id="cpuScore">0</b></div>
 
-    <div id="boardWrap" class="boardWrap">
-      <div id="board" class="board"></div>
-    </div>
-  </div>
+<div id="boardWrap" class="boardWrap">
+<div id="board" class="board"></div>
+<div id="line"></div>
+</div>
+<div id="winText" class="winText"></div>
+</div>
 
-  <!-- GAME RULES SECTION -->
-  <div class="card">
-    <h2 id="lblRulesHeader">📜 Game Rules</h2>
-    <div id="rulesText" class="rules-box"></div>
-  </div>
+<!-- Multi-Language Rules Card -->
+<div class="card">
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+<h2 id="ruleTitle" style="margin:0;">📜 Game Rules</h2>
+<select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+<option value="bn">🇧🇩 বাংলা</option>
+<option value="en">🇬🇧 English</option>
+<option value="hi">🇮🇳 हिन्दी</option>
+<option value="ru">🇷🇺 Русский</option>
+<option value="es">🇪🇸 Español</option>
+</select>
+</div>
 
-  <div class="footer">Tic-Tac-Toe Arena © 2026 — Aftab Shahriar Shawon</div>
+<div id="rulesContainer"></div>
+</div>
+
+<div class="footer">Tic-Tac-Toe: Next Level © 2026 — Aftab Shahriar Shawon</div>
 </div>
 
 <script>
-// --- MULTI-LANGUAGE DICTIONARY ---
-const translations = {
-  bn: {
-    mode: "গেম মোড:", opponent: "প্রতিপক্ষ:", action: "অ্যাকশন:", rulesHeader: "📜 গেমের নিয়মাবলী",
-    rules: "<b>ক্লাসিক মোড:</b> পরপর ৩টি ঘর মেলালেই জয়।<br><b>নেক্সট লেভেল মোড:</b> ফাঁকা ঘরে ১ পয়েন্ট, ডাবল চিহ্নে ১.৫ পয়েন্ট, আর শেয়ার করা ঘরে ০.৫ পয়েন্ট। জেতার জন্য ৩টি ঘর মিলিয়ে অন্তত ৩.০ পয়েন্ট লাগবে!",
-    statusStart: "শুরু করতে X বা O বেছে নিন", win: "আপনি জিতেছেন! 🏆", lose: "কম্পিউটার জিতেছে! 🤖", score: "স্কোর", you: "আপনি", cpu: "কম্পিউটার"
-  },
-  en: {
-    mode: "Game Mode:", opponent: "Opponent:", action: "Action:", rulesHeader: "📜 Game Rules",
-    rules: "<b>Classic Mode:</b> Traditional rules. Connect 3 marks to win.<br><b>Next Level Mode:</b> Empty box = 1 pt, Double mark = 1.5 pts, Shared box = 0.5 pt. Match 3 boxes with total 3.0+ points to win!",
-    statusStart: "Choose X or O to start", win: "You Won! 🏆", lose: "Computer Won! 🤖", score: "Score", you: "You", cpu: "Computer"
-  },
-  ru: {
-    mode: "Режим игры:", opponent: "Соперник:", action: "Действие:", rulesHeader: "📜 Правила игры",
-    rules: "<b>Классика:</b> Соберите 3 в ряд.<br><b>Следующий уровень:</b> Пустая клетка = 1 очко, Двойная = 1.5, Общая = 0.5. Соберите 3 клетки с суммой 3.0+ для победы!",
-    statusStart: "Выберите X или O", win: "Вы выиграли! 🏆", lose: "Компьютер выиграл! 🤖", score: "Счет", you: "Вы", cpu: "Компьютер"
-  },
-  es: {
-    mode: "Modo de juego:", opponent: "Oponente:", action: "Acción:", rulesHeader: "📜 Reglas del juego",
-    rules: "<b>Clásico:</b> Conecta 3 para ganar.<br><b>Next Level:</b> Casilla vacía = 1 pt, Marca doble = 1.5 pts, Compartida = 0.5 pt. ¡Une 3 casillas con un total de 3.0+ puntos!",
-    statusStart: "Elige X u O para empezar", win: "¡Ganaste! 🏆", lose: "¡Ganó la computadora! 🤖", score: "Puntuación", you: "Tú", cpu: "Computadora"
-  },
-  zh: {
-    mode: "游戏模式:", opponent: "对手:", action: "操作:", rulesHeader: "📜 游戏规则",
-    rules: "<b>经典模式:</b> 连成3个标记即可获胜。<br><b>进阶模式:</b> 空格=1分，双重标记=1.5分，共享格=0.5分。连成3格且总分达到3.0分以上即可获胜！",
-    statusStart: "选择 X 或 O 开始", win: "你赢了！ 🏆", lose: "电脑赢了！ 🤖", score: "得分", you: "你", cpu: "电脑"
-  },
-  hi: {
-    mode: "गेम मोड:", opponent: "प्रतिद्वंद्वी:", action: "एक्शन:", rulesHeader: "📜 नियम",
-    rules: "<b>क्लासिक:</b> लगातार 3 निशान मिलाएं।<br><b>नेक्स्ट लेवल:</b> खाली बॉक्स = 1 अंक, डबल मार्क = 1.5 अंक, शेयर बॉक्स = 0.5 अंक। जीतने के लिए 3 बॉक्स मिलाकर कुल 3.0+ अंक चाहिए!",
-    statusStart: "शुरू करने के लिए X या O चुनें", win: "आप जीत गए! 🏆", lose: "कंप्यूटर जीत गया! 🤖", score: "स्कोर", you: "आप", cpu: "कंप्यूटर"
-  },
-  ar: {
-    mode: "وضع اللعبة:", opponent: "الخصم:", action: "إجراء:", rulesHeader: "📜 قواعد اللعبة",
-    rules: "<b>الكلاسيكي:</b> صِل 3علامات للفوز.<br><b>المستوى التالي:</b> مربع فارغ = نقطة، علامة مزدوجة = 1.5 نقطة، مشترك = 0.5 نقطة. صِل 3 مربعات بمجموع 3.0+ نقطة للفوز!",
-    statusStart: "اختر X أو O للبدء", win: "لقد فزت! 🏆", lose: "فاز الكمبيوتر! 🤖", score: "النتيجة", you: "أنت", cpu: "الكمبيوتر"
-  },
-  ja: {
-    mode: "ゲームモード:", opponent: "対戦相手:", action: "アクション:", rulesHeader: "📜 ルール",
-    rules: "<b>クラシック:</b> 3つ並べると勝利。<br><b>ネクストレベル:</b> 空マス=1点、ダブルマス=1.5点、共有マス=0.5点。3マス揃えて合計3.0点以上で勝利！",
-    statusStart: "XかOを選んでスタート", win: "あなたの勝ち！ 🏆", lose: "コンピューターの勝ち！ 🤖", score: "スコア", you: "あなた", cpu: "PC"
-  }
+// Rules Translation Data
+const rulesData = {
+bn: {
+title: "📜 গেমের নিয়মাবলী",
+r1Title: "১. জয়লাভের শর্ত",
+r1Text: "যেকোনো একটি সারিতে (সোজা, খাড়া বা কোনাকুনি) ৩টি ঘর মেলাতে হবে এবং ওই সারির মোট পয়েন্ট কমপক্ষে ৩.০ হতে হবে।",
+r2Title: "২. পয়েন্ট দেওয়ার নিয়ম",
+r2List: [
+"প্রথম চাল (ফাঁকা ঘরে): ১.০ পয়েন্ট",
+"দ্বিতীয় চাল (নিজের ঘরে): ১.৫ পয়েন্ট (ডাবল * মার্ক হবে)",
+"শেয়ার্ড ঘর (প্রতিপক্ষের ঘরে): দুজনই ০.৫ পয়েন্ট করে পাবে (½ + ½)",
+"সীমা: একটি ঘর সর্বোচ্চ ২ বার ব্যবহার করা যাবে।"
+ ],
+r3Title: "স্পেশাল আইকন",
+r3List: [
+"Double X: লাল রঙের তারা (*) চিহ্ন হয়ে যাবে।",
+"Double O: জ্বলজ্বলে ডাবল রিং ও স্টার (★) হবে।"
+ ]
+},
+en: {
+title: "📜 Game Rules",
+r1Title: "1. Winning Requirement",
+r1Text: "Connect 3 boxes in a row (Horizontal, Vertical, or Diagonal) and score at least 3.0 points on that line.",
+r2Title: "2. Point System",
+r2List: [
+"First Use (Empty Box): 1.0 Point",
+"Second Use (Same Player): 1.5 Points (Creates Double * Mark)",
+"Shared Box (Opponent's Box): Both get 0.5 Point each (½ + ½)",
+"Limit: A box can be used maximum 2 times."
+ ],
+r3Title: "Special Icons",
+r3List: [
+"Double X: Converts into a Special Red Star (*).",
+"Double O: Converts into a Glowing Double Ring with Star (★)."
+ ]
+},
+hi: {
+title: "📜 खेल के नियम",
+r1Title: "1. जीतने की शर्त",
+r1Text: "एक पंक्ति (क्षैतिज, लंबवत, या विकर्ण) में 3 बॉक्स जोड़ें और उस लाइन पर कम से कम 3.0 अंक प्राप्त करें।",
+r2Title: "2. अंक प्रणाली",
+r2List: [
+"पहला उपयोग (खाली बॉक्स): 1.0 अंक",
+"दूसरा उपयोग (समान खिलाड़ी): 1.5 अंक (डबल * मार्क बनता है)",
+"शेयर किया गया बॉक्स (विरोधी का बॉक्स): दोनों को 0.5 अंक मिलते हैं (½ + ½)",
+"सीमा: एक बॉक्स का अधिकतम 2 बार उपयोग किया जा सकता है।"
+ ],
+r3Title: "विशेष प्रतीक",
+r3List: [
+"Double X: एक विशेष लाल स्टार (*) में बदल जाता है।",
+"Double O: स्टार (★) के साथ एक चमकती हुई डबल रिंग में बदल जाता है।"
+ ]
+},
+ru: {
+title: "📜 Правила игры",
+r1Title: "1. Условие победы",
+r1Text: "Соедините 3 клетки в ряд (по горизонтали, вертикали или диагонали) и наберите не менее 3.0 очков на этой линии.",
+r2Title: "2. Система очков",
+r2List: [
+"Первое использование (пустая клетка): 1.0 балл",
+"Второе использование (тот же игрок): 1.5 балла (создает знак Двойной *)",
+"Общая клетка (клетка соперника): Оба получают по 0.5 балла (½ + ½)",
+"Лимит: Клетку можно использовать максимум 2 раза."
+ ],
+r3Title: "Специальные значки",
+r3List: [
+"Double X: Превращается в специальную красную звезду (*).",
+"Double O: Превращается в светящееся двойное кольцо со звездой (★)."
+ ]
+},
+es: {
+title: "📜 Reglas del Juego",
+r1Title: "1. Requisito para Ganar",
+r1Text: "Conecta 3 casillas en línea (Horizontal, Vertical o Diagonal) y consigue al menos 3.0 puntos en esa línea.",
+r2Title: "2. Sistema de Puntos",
+r2List: [
+"Primer uso (Casilla vacía): 1.0 Punto",
+"Segundo uso (Mismo jugador): 1.5 Puntos (Crea la marca Doble *)",
+"Casilla compartida (Casilla del oponente): Ambos obtienen 0.5 Puntos (½ + ½)",
+"Límite: Una casilla se puede usar máximo 2 veces."
+ ],
+r3Title: "Iconos Especiales",
+r3List: [
+"Double X: Se convierte en una Estrella Roja Especial (*).",
+"Double O: Se convierte en un Anillo Doble Brillante con Estrella (★)."
+ ]
+}
 };
 
-let currentLang = 'bn';
-
 function changeLanguage(lang) {
-  currentLang = lang;
-  const t = translations[lang];
-  document.getElementById('lblMode').textContent = t.mode;
-  document.getElementById('lblOpponent').textContent = t.opponent;
-  document.getElementById('lblAction').textContent = t.action;
-  document.getElementById('lblRulesHeader').textContent = t.rulesHeader;
-  document.getElementById('rulesText').innerHTML = t.rules;
-  document.getElementById('status').textContent = t.statusStart;
-  document.getElementById('lblScore').textContent = t.score;
+const d = rulesData[lang] || rulesData['bn'];
+document.getElementById('ruleTitle').textContent = d.title;
 
-  const btns = document.querySelectorAll('#langButtons .opt-btn');
-  btns.forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
-  setOpponent(opponentMode);
+let html = &lt;div class="rule-box"&gt; &lt;b&gt;${d.r1Title}</b>
+<p style="margin:4px 0 0;">${d.r1Text}&lt;/p&gt; &lt;/div&gt; &lt;div class="rule-box"&gt; &lt;b&gt;${d.r2Title}</b>
+<ul>
+${d.r2List.map(item =&gt;<li>latex
+{item}&lt;/li>`).join('')} &lt;/ul&gt; &lt;/div&gt; &lt;div class="rule-box"&gt; &lt;b&gt;
+
+{d.r3Title}</b>
+<ul>
+latex
+{d.r3List.map(item =&gt; `<li&gt;
+
+{item}</li>).join('')} &lt;/ul&gt; &lt;/div&gt;;
+document.getElementById('rulesContainer').innerHTML = html;
 }
 
-// --- SOUND SYNTHESIS ---
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function playSound(type) {
-  try {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    if (type === 'click') {
-      osc.frequency.setValueAtTime(450, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
-      osc.start(); osc.stop(audioCtx.currentTime + 0.04);
-    }
-  } catch(e) {}
-}
-
-// --- REALISTIC PRINCE ANIMATION ---
-const fairyCanvas = document.getElementById('fairyCanvas');
-const fCtx = fairyCanvas.getContext('2d');
-
-let wingAngle = 0, floatOffset = 0;
-
-function drawRealisticPrince() {
-  fCtx.clearRect(0, 0, 180, 220);
-  const cx = 90, cy = 110 + Math.sin(floatOffset)*5;
-
-  // 1. Wings
-  fCtx.save();
-  let wingGrad = fCtx.createRadialGradient(cx, cy - 10, 10, cx, cy - 10, 80);
-  wingGrad.addColorStop(0, "rgba(0, 210, 255, 0.9)");
-  wingGrad.addColorStop(0.6, "rgba(138, 43, 226, 0.6)");
-  wingGrad.addColorStop(1, "rgba(0, 210, 255, 0)");
-
-  fCtx.fillStyle = wingGrad;
-  fCtx.beginPath();
-  fCtx.ellipse(cx - 35, cy - 10, 45, 20 + Math.sin(wingAngle)*12, Math.PI / 6, 0, Math.PI * 2);
-  fCtx.fill();
-  fCtx.beginPath();
-  fCtx.ellipse(cx + 35, cy - 10, 45, 20 + Math.sin(wingAngle)*12, -Math.PI / 6, 0, Math.PI * 2);
-  fCtx.fill();
-  fCtx.restore();
-
-  // 2. Royal Outfit
-  fCtx.fillStyle = "#ff0055";
-  fCtx.beginPath();
-  fCtx.moveTo(cx - 20, cy + 15);
-  fCtx.quadraticCurveTo(cx, cy + 60, cx + 20, cy + 15);
-  fCtx.lineTo(cx + 30, cy + 70); fCtx.lineTo(cx - 30, cy + 70);
-  fCtx.closePath(); fCtx.fill();
-
-  fCtx.fillStyle = "#1e293b";
-  fCtx.beginPath(); fCtx.roundRect(cx - 18, cy + 10, 36, 40, 10); fCtx.fill();
-  fCtx.strokeStyle = "#ffea00"; fCtx.lineWidth = 2; fCtx.stroke();
-
-  // 3. Head & Skin
-  fCtx.fillStyle = "#ffdbac";
-  fCtx.beginPath(); fCtx.arc(cx, cy - 20, 22, 0, Math.PI * 2); fCtx.fill();
-
-  // Hair
-  fCtx.fillStyle = "#4a2c11";
-  fCtx.beginPath(); fCtx.arc(cx, cy - 26, 23, Math.PI, Math.PI * 2); fCtx.fill();
-  fCtx.beginPath();
-  fCtx.moveTo(cx - 20, cy - 30); fCtx.lineTo(cx - 8, cy - 15); fCtx.lineTo(cx, cy - 28);
-  fCtx.lineTo(cx + 10, cy - 15); fCtx.lineTo(cx + 20, cy - 30); fCtx.fill();
-
-  // Eyes
-  fCtx.fillStyle = "#00d2ff";
-  fCtx.beginPath(); fCtx.arc(cx - 8, cy - 20, 4, 0, Math.PI * 2); fCtx.arc(cx + 8, cy - 20, 4, 0, Math.PI * 2); fCtx.fill();
-  fCtx.fillStyle = "#fff";
-  fCtx.beginPath(); fCtx.arc(cx - 9, cy - 22, 1.5, 0, Math.PI * 2); fCtx.arc(cx + 7, cy - 22, 1.5, 0, Math.PI * 2); fCtx.fill();
-
-  // Smile
-  fCtx.strokeStyle = "#a0522d"; fCtx.lineWidth = 2;
-  fCtx.beginPath(); fCtx.arc(cx, cy - 12, 6, 0.1 * Math.PI, 0.9 * Math.PI); fCtx.stroke();
-
-  // Crown
-  fCtx.fillStyle = "#ffea00";
-  fCtx.beginPath();
-  fCtx.moveTo(cx - 16, cy - 38);
-  fCtx.lineTo(cx - 16, cy - 50); fCtx.lineTo(cx - 8, cy - 42);
-  fCtx.lineTo(cx, cy - 55);
-  fCtx.lineTo(cx + 8, cy - 42); fCtx.lineTo(cx + 16, cy - 50);
-  fCtx.lineTo(cx + 16, cy - 38);
-  fCtx.closePath(); fCtx.fill();
-  fCtx.strokeStyle = "#e67e22"; fCtx.lineWidth = 1.5; fCtx.stroke();
-  
-  fCtx.fillStyle = "#ff0055";
-  fCtx.beginPath(); fCtx.arc(cx, cy - 45, 3, 0, Math.PI * 2); fCtx.fill();
-}
-
-function updateFairyPosition() {
-  wingAngle += 0.3;
-  floatOffset += 0.05;
-  drawRealisticPrince();
-  requestAnimationFrame(updateFairyPosition);
-}
-
-function interactWithFairy() {
-  speakFairy("হাই শাওন! কোনো প্রশ্ন বা জোকস থাকলে বলো, আমি উত্তর দিচ্ছি! 😄");
-}
-
-function speakFairy(text) {
-  document.getElementById('fairyAnswerText').innerHTML = text;
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
-    const cleanText = text.replace(/<[^>]*>?/gm, '');
-    const u = new SpeechSynthesisUtterance(cleanText);
-    u.lang = 'bn-BD'; u.pitch = 1.5; u.rate = 1.0;
-    window.speechSynthesis.speak(u);
-  }
-}
-
-// --- INSTANT OPENAI AI ENGINE ---
-function askOpenAI() {
-  const input = document.getElementById('userQueryInput');
-  const q = input.value.trim().toLowerCase();
-  if(!q) return;
-
-  document.getElementById('fairyAnswerText').textContent = "ভাবছি... 🤔";
-  input.value = '';
-
-  setTimeout(() => {
-    let ans = getSmartAIResponse(q);
-    speakFairy(ans);
-  }, 400);
-}
-
-function startVoiceRecognition() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) { speakFairy("আপনার ব্রাউজারে ভয়েস সাপোর্ট নেই!"); return; }
-  const recognition = new SpeechRecognition();
-  recognition.lang = 'bn-BD';
-  document.getElementById('fairyAnswerText').textContent = "🎙️ শুনছি... বলুন!";
-
-  recognition.onresult = (e) => {
-    const q = e.results[0][0].transcript.toLowerCase();
-    let ans = getSmartAIResponse(q);
-    speakFairy(ans);
-  };
-  recognition.start();
-}
-
-function getSmartAIResponse(q) {
-  if (q.includes("joke") || q.includes("funny") || q.includes("হাসি") || q.includes("জোকস")) {
-    const jokes = [
-      "বল্টু: স্যার, পরীক্ষায় শূন্য পাইছি কেন? শিক্ষক: তুমি খাতা খালি জমা দিছিলা! বল্টু: ফাঁকা খাতায় শূন্য দেওয়া তো অন্যায়! 😂",
-      "মশাকে কখনো ঘুমাতে দেখেছেন? কারণ মশা সারারাত ডিজে বাজায়! 🤣",
-      "কম্পিউটার কেন ডাক্তার দেখায়? কারণ তার পেটে প্রচুর 'ভাইরাস' ঢুকছে! 🤖"
-    ];
-    return jokes[Math.floor(Math.random() * jokes.length)];
-  } else if (q.includes("classic") || q.includes("ক্লাসিক")) {
-    return "ক্লাসিক মোডে পরপর ৩টি ঘর মেলালেই আপনি জিতে যাবেন!";
-  } else if (q.includes("next level") || q.includes("পয়েন্ট") || q.includes("নিয়ম")) {
-    return "নেক্সট লেভেলে ফাঁকা ঘর=১ পয়েন্ট, ডাবল=১.৫, আর শেয়ার্ড=০.৫ পয়েন্ট! ৩ ঘর মিলিয়ে মোট ৩.০ পয়েন্ট লাগবে!";
-  } else if (q.includes("কে বানাইছে") || q.includes("বানিয়েছে") || q.includes("shawon") || q.includes("aftab")) {
-    return "এই দারুণ গেমটি বানিয়েছেন প্রতিভাবান আফতাব শাহরিয়ার শাওন! 👑";
-  } else if (q.includes("কেমন আছো") || q.includes("কেমন আছেন")) {
-    return "আমি একদম বিন্দাস আছি! আপনার গেম কেমন চলছে বলুন্? ✨";
-  } else {
-    return `"${q}" সম্পর্কে দারুণ প্রশ্ন! খেলা চালিয়ে যান আর ৩.০ পয়েন্ট টার্গেট করুন! 🚀`;
-  }
-}
-
-// --- GAME LOGIC ---
-let gameVersion = 'nextlevel', opponentMode = 'bot', human = 'X', computer = 'O', turn = 'X', gameOver = true;
-let board = Array(9).fill(''), uses = Array(9).fill(0), pts = { X: Array(9).fill(0), O: Array(9).fill(0) };
-const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-
+// Splash screen timer
 setTimeout(() => {
-  document.getElementById('splashScreen').style.display = 'none';
-  document.getElementById('mainGamePage').style.display = 'block';
-  changeLanguage('bn');
-  updateFairyPosition();
-  newGame();
-}, 3500);
+document.getElementById('splashScreen').style.display = 'none';
+document.getElementById('mainGamePage').style.display = 'block';
+changeLanguage('bn');
+newGame();
+}, 5000);
 
-function setVersion(ver) {
-  gameVersion = ver;
-  document.getElementById('verClassic').classList.toggle('active', ver==='classic');
-  document.getElementById('verNext').classList.toggle('active', ver==='nextlevel');
-  newGame();
-}
+let opponentMode = 'bot', botLevel = 3;
+let human = 'X', computer = 'O', turn = 'X', gameOver = true;
+let board = Array(9).fill('');
+let uses = Array(9).fill(0);
+let pts = { X: Array(9).fill(0), O: Array(9).fill(0) };
+let round = 0;
+
+const lines = [
+[0,1,2],[3,4,5],[6,7,8],
+[0,3,6],[1,4,7],[2,5,8],
+[0,4,8],[2,4,6]
+];
 
 function setOpponent(mode) {
-  opponentMode = mode;
-  const t = translations[currentLang];
-  document.getElementById('modeBot').classList.toggle('active', mode==='bot');
-  document.getElementById('modeFriend').classList.toggle('active', mode==='friend');
-  document.getElementById('p1Name').textContent = mode==='bot' ? t.you : 'Player X';
-  document.getElementById('p2Name').textContent = mode==='bot' ? t.cpu : 'Player O';
-  newGame();
+opponentMode = mode;
+document.getElementById('modeBot').classList.toggle('active', mode==='bot');
+document.getElementById('modeFriend').classList.toggle('active', mode==='friend');
+document.getElementById('botDiffGroup').style.display = mode==='bot' ? 'block' : 'none';
+document.getElementById('p1Name').textContent = mode==='bot' ? 'You' : 'Player X';
+document.getElementById('p2Name').textContent = mode==='bot' ? 'Computer' : 'Player O';
+newGame();
 }
 
-function startGame(sign) { human = sign; computer = sign === 'X' ? 'O' : 'X'; newGame(); }
+function setDifficulty(lvl) {
+botLevel = lvl;
+[1,2,3].forEach(l => document.getElementById('diff'+l).classList.toggle('active', l===lvl));
+}
+
+function startGame(sign) {
+human = sign; computer = sign === 'X' ? 'O' : 'X';
+newGame();
+}
 
 function newGame() {
-  board = Array(9).fill(''); uses = Array(9).fill(0);
-  pts = { X: Array(9).fill(0), O: Array(9).fill(0) };
-  turn = 'X'; gameOver = false;
-  render();
-  if(opponentMode === 'bot' && turn === computer) setTimeout(computerMove, 400);
+round++;
+board = Array(9).fill('');
+uses = Array(9).fill(0);
+pts = { X: Array(9).fill(0), O: Array(9).fill(0) };
+turn = 'X'; gameOver = false;
+document.getElementById('winText').textContent = '';
+document.getElementById('line').innerHTML = '';
+render();
+
+if(opponentMode === 'bot' && turn === computer) {
+setStatus('Computer thinking...');
+const r = round;
+setTimeout(() => { if(r === round && !gameOver) computerMove(); }, 400);
+} else {
+setStatus(opponentMode === 'bot' ? 'Your turn (' + human + ').' : 'Turn: Player ' + turn);
+}
 }
 
+function setStatus(text) { document.getElementById('status').textContent = text; }
+function score(p) { return pts[p].reduce((a,b) => a+b, 0); }
+
 function render() {
-  const b = document.getElementById('board'); b.innerHTML = '';
-  const maxU = gameVersion === 'classic' ? 1 : 2;
+const b = document.getElementById('board');
+b.innerHTML = '';
 
-  for(let i=0; i<9; i++) {
-    const c = document.createElement('button');
-    c.className = 'cell';
-    c.disabled = gameOver || uses[i] >= maxU;
-    c.onclick = () => makeMove(i);
+for(let i=0; i<9; i++) {
+const c = document.createElement('button');
+c.className = 'cell';
+c.disabled = gameOver || (opponentMode === 'bot' && turn !== human) || uses[i] >= 2;
+c.onclick = () => makeMove(i);
 
-    if(uses[i] === 1) c.innerHTML = board[i] === 'X' ? '<span class="x">X</span>' : '<span class="o">O</span>';
-    if(gameVersion === 'nextlevel' && uses[i] === 2) {
-      if(board[i] === 'X') c.innerHTML = '<span class="double-x-star">*</span>';
-      else if(board[i] === 'O') c.innerHTML = '<span class="o">★</span>';
-      else c.innerHTML = '<span class="x" style="font-size:20px;position:absolute;left:5%">X</span><span class="o" style="font-size:20px;position:absolute;right:5%">O</span>';
-    }
-    b.appendChild(c);
-  }
+if(uses[i] === 1) {
+c.innerHTML = board[i] === 'X' ? '<span class="x">X</span>' : '<span class="o">O</span>';
+}
+
+if(uses[i] === 2) {
+if(board[i] === 'X') {
+c.innerHTML = '<span class="double-x-star">*</span>';
+} else if(board[i] === 'O') {
+c.innerHTML = '<span class="double-o"></span><span class="star-icon">★</span>';
+} else {
+c.innerHTML = '<span class="x" style="font-size:26px;position:absolute;left:8%">X</span><span class="o" style="font-size:26px;position:absolute;right:8%">O</span><span class="shared-text">½+½</span>';
+}
+}
+b.appendChild(c);
+}
+
+document.getElementById('youScore').textContent = score(human);
+document.getElementById('cpuScore').textContent = score(computer);
+}
+
+function place(i, p) {
+if(uses[i] >= 2) return false;
+uses[i]++;
+if(uses[i] === 1) { board[i] = p; pts[p][i] = 1; }
+else {
+if(board[i] === p) { pts[p][i] = 1.5; }
+else { board[i] = 'XO'; pts.X[i] = 0.5; pts.O[i] = 0.5; }
+}
+return true;
+}
+
+function hasSign(i, p) { return board[i] === p || board[i] === 'XO'; }
+
+function winningLine(p) {
+for(const line of lines) {
+if(line.every(i => hasSign(i, p))) {
+const total = pts[p][line[0]] + pts[p][line[1]] + pts[p][line[2]];
+if(total >= 3) return { line, total };
+}
+}
+return null;
+}
+
+function finish(p, w) {
+gameOver = true;
+const winMsg = opponentMode === 'bot'
+? (p === human ? 'You Win! 🏆' : 'Computer Wins! 🤖')
+: ('Player ' + p + ' Wins! 🏆');
+setStatus(winMsg);
+document.getElementById('winText').textContent = 'Winning Line Score: ' + w.total;
+render();
+setTimeout(() => drawLine(w.line), 50);
+}
+
+function afterMove(p) {
+const w = winningLine(p);
+if(w) { finish(p, w); return true; }
+if(uses.every(x => x === 2)) {
+gameOver = true; setStatus('Draw — All boxes filled!'); render(); return true;
+}
+return false;
 }
 
 function makeMove(i) {
-  const maxU = gameVersion === 'classic' ? 1 : 2;
-  if(gameOver || uses[i] >= maxU) return;
-  playSound('click');
-  uses[i]++;
+if(gameOver || uses[i] >= 2) return;
+const p = turn;
+place(i, p);
+if(afterMove(p)) return;
 
-  if(gameVersion === 'classic') { board[i] = turn; pts[turn][i] = 1; }
-  else {
-    if(uses[i] === 1) { board[i] = turn; pts[turn][i] = 1; }
-    else { if(board[i] === turn) pts[turn][i] = 1.5; else { board[i] = 'XO'; pts.X[i] = 0.5; pts.O[i] = 0.5; } }
-  }
+turn = turn === 'X' ? 'O' : 'X';
+render();
 
-  if(checkWin(turn)) return;
-  turn = turn === 'X' ? 'O' : 'X';
-  render();
-  if(opponentMode === 'bot' && turn === computer) setTimeout(computerMove, 400);
+if(opponentMode === 'bot' && turn === computer) {
+setStatus('Computer thinking...');
+const r = round;
+setTimeout(() => { if(r === round && !gameOver) computerMove(); }, 400);
+} else {
+setStatus(opponentMode === 'bot' ? 'Your turn.' : 'Turn: Player ' + turn);
+}
 }
 
-function checkWin(p) {
-  const t = translations[currentLang];
-  for(const l of lines) {
-    if(l.every(idx => board[idx] === p || board[idx] === 'XO')) {
-      const tot = pts[p][l[0]] + pts[p][l[1]] + pts[p][l[2]];
-      if(gameVersion === 'classic' || tot >= 3) {
-        gameOver = true;
-        document.getElementById('status').textContent = p === human ? t.win : t.lose;
-        render(); return true;
-      }
-    }
-  }
-  return false;
-}
+function save() { return { board: board.slice(), uses: uses.slice(), X: pts.X.slice(), O: pts.O.slice() }; }
+function load(s) { board = s.board; uses = s.uses; pts = { X: s.X, O: s.O }; }
+function testMove(i, p) { const s = save(); place(i, p); const w = winningLine(p); load(s); return w; }
 
 function computerMove() {
-  if(gameOver) return;
-  const maxU = gameVersion === 'classic' ? 1 : 2;
-  const avail = [];
-  for(let i=0; i<9; i++) if(uses[i] < maxU) avail.push(i);
-  if(avail.length) makeMove(avail[Math.floor(Math.random()*avail.length)]);
+if(gameOver) return;
+const avail = [];
+for(let i=0; i<9; i++) if(uses[i] < 2) avail.push(i);
+if(!avail.length) return;
+
+let move;
+if(botLevel === 1) {
+move = avail[Math.floor(Math.random() * avail.length)];
+} else if(botLevel === 2) {
+move = avail.find(i => testMove(i, computer)) || avail.find(i => testMove(i, human)) || avail[Math.floor(Math.random() * avail.length)];
+} else {
+move = avail.find(i => testMove(i, computer));
+if(move === undefined) move = avail.find(i => testMove(i, human));
+if(move === undefined && uses[4] < 2) move = 4;
+if(move === undefined) {
+const order = [0,2,6,8,1,3,5,7];
+move = order.find(i => uses[i] < 2);
+}
+if(move === undefined) move = avail[0];
+}
+
+place(move, computer);
+if(afterMove(computer)) return;
+turn = human; setStatus('Your turn.'); render();
+}
+
+function drawLine(indexes) {
+const wrap = document.getElementById('boardWrap');
+const cells = [...document.querySelectorAll('.cell')];
+if(cells.length !== 9) return;
+const a = cells[indexes[0]].getBoundingClientRect();
+const z = cells[indexes[2]].getBoundingClientRect();
+const r = wrap.getBoundingClientRect();
+const x1 = a.left + a.width/2 - r.left, y1 = a.top + a.height/2 - r.top;
+const x2 = z.left + z.width/2 - r.left, y2 = z.top + z.height/2 - r.top;
+const dx = x2 - x1, dy = y2 - y1;
+const length = Math.sqrt(dxdx + dydy);
+const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+const l = document.getElementById('line');
+l.innerHTML = '';
+const el = document.createElement('div');
+el.className = 'winLine';
+el.style.left = x1 + 'px'; el.style.top = (y1 - 3) + 'px';
+el.style.width = length + 'px'; el.style.transform = 'rotate(' + angle + 'deg)';
+l.appendChild(el);
 }
 </script>
 </body>
 </html>
+
