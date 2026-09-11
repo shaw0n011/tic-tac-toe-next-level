@@ -24,6 +24,20 @@ h2{margin:0 0 14px;font-size:23px}
   display:inline-block;margin-top:10px;padding:7px 12px;
   border-radius:999px;background:#f1f3f5;font-weight:bold
 }
+
+/* Mode Selector Switch */
+.version-selector{
+  display:flex;gap:12px;margin-bottom:15px;justify-content:center;
+}
+.version-btn{
+  flex:1;padding:12px;border-radius:12px;border:2px solid #333;
+  background:#eef2f7;font-weight:bold;font-size:16px;cursor:pointer;
+  transition:all 0.2s ease;
+}
+.version-btn.active{
+  background:#145dcc;color:#fff;border-color:#145dcc;
+}
+
 .controls{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}
 button{
   font-size:16px;padding:10px 15px;border-radius:10px;
@@ -44,41 +58,49 @@ button:hover{background:#f0f0f0}
 .cell:disabled{cursor:default}
 .x{color:#e00000;font-size:61px;font-weight:900;line-height:1}
 .o{color:#145dcc;font-size:61px;font-weight:900;line-height:1}
-.double-x{font-size:53px}
-.double-x .star{font-size:24px;position:absolute;right:9px;top:6px;color:#111}
-.double-o{
-  width:57px;height:57px;border:8px solid #145dcc;border-radius:50%;
-  position:relative
+
+/* V1 Styling */
+.double-x-star-v1{
+  color:#e00000;font-size:86px;font-weight:900;line-height:1;text-shadow:0 1px 0 rgba(0,0,0,.08);
 }
-.double-o:after{
-  content:"";position:absolute;width:27px;height:27px;
-  border:6px solid #145dcc;border-radius:50%;
-  left:50%;top:50%;transform:translate(-50%,-50%);
+.double-o-v1{
+  width:57px;height:57px;border:8px solid #145dcc;border-radius:50%;position:relative;
 }
-.star{
-  position:absolute;right:8px;top:5px;font-size:24px;
-  color:#111;font-weight:bold;
+.double-o-v1:after{
+  content:"";position:absolute;width:27px;height:27px;border:6px solid #145dcc;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);
 }
-.double-x-star{
-  color:#e00000;
-  font-size:86px;
-  font-weight:900;
-  line-height:1;
-  text-shadow:0 1px 0 rgba(0,0,0,.08);
+.star-v1{
+  position:absolute;right:8px;top:5px;font-size:24px;color:#111;font-weight:bold;
 }
+
+/* V2 Styling */
+.double-x-star-v2{
+  color:#e00000;font-size:70px;font-weight:900;line-height:1;
+}
+.double-o-v2{
+  width:50px;height:50px;border:6px solid #145dcc;border-radius:50%;
+  position:relative;display:flex;align-items:center;justify-content:center;
+}
+.double-o-v2:after{
+  content:"";width:22px;height:22px;border:5px solid #145dcc;border-radius:50%;
+}
+.star-v2{
+  position:absolute;right:8px;top:5px;font-size:20px;color:#111;font-weight:bold;
+}
+
 .shared{
   position:absolute;right:7px;bottom:5px;font-size:12px;
   color:#555;font-weight:bold;
 }
 .winLine{
   position:absolute;height:8px;background:#111;border-radius:10px;
-  transform-origin:left center;pointer-events:none;
+  transform-origin:left center;pointer-events:none;z-index:10;
 }
 .winLine:after{
   content:"";position:absolute;right:-2px;top:50%;
   transform:translateY(-50%);
-  border-top:13px solid transparent;border-bottom:13px solid transparent;
-  border-left:22px solid #111;
+  border-top:10px solid transparent;border-bottom:10px solid transparent;
+  border-left:18px solid #111;
 }
 .winText{text-align:center;font-weight:bold;margin-top:13px}
 .rules p,.rules li{line-height:1.55}
@@ -103,7 +125,12 @@ button:hover{background:#f0f0f0}
   </div>
 
   <div class="card">
-    <h2>🎮 Play vs Computer</h2>
+    <h2>🎮 Choose Game Version</h2>
+    <div class="version-selector">
+      <button id="btnV1" class="version-btn active" onclick="setVersion('v1')">Version 1 (Original)</button>
+      <button id="btnV2" class="version-btn" onclick="setVersion('v2')">Version 2 (Updated UI)</button>
+    </div>
+
     <p>Choose your sign. The computer will play the other sign.</p>
 
     <div class="controls">
@@ -183,11 +210,19 @@ const lines=[
  [0,4,8],[2,4,6]
 ];
 
+let currentVersion = 'v1';
 let human='X', computer='O', turn='X', gameOver=true;
 let board=Array(9).fill('');
 let uses=Array(9).fill(0);
 let pts={X:Array(9).fill(0),O:Array(9).fill(0)};
 let round=0;
+
+function setVersion(ver){
+  currentVersion = ver;
+  document.getElementById('btnV1').classList.toggle('active', ver==='v1');
+  document.getElementById('btnV2').classList.toggle('active', ver==='v2');
+  render();
+}
 
 function startGame(sign){
   human=sign; computer=sign==='X'?'O':'X';
@@ -238,14 +273,17 @@ function render(){
 
     if(uses[i]===2){
       if(board[i]==='X'){
-        // Same player used the box twice: X + star.
-        c.innerHTML='<span class="double-x-star">*</span>';
+        c.innerHTML = currentVersion === 'v1'
+          ? '<span class="double-x-star-v1">*</span>'
+          : '<span class="double-x-star-v2">★</span>';
       }else if(board[i]==='O'){
-        // Same player used the box twice: double O + star.
-        c.innerHTML='<span class="double-o"></span><span class="star">★</span>';
+        c.innerHTML = currentVersion === 'v1'
+          ? '<span class="double-o-v1"></span><span class="star-v1">★</span>'
+          : '<span class="double-o-v2"></span><span class="star-v2">★</span>';
       }else{
-        // Both players used the box once: show X and O separately.
-        c.innerHTML='<span class="x" style="font-size:48px;position:absolute;left:25%">X</span><span class="o" style="font-size:48px;position:absolute;right:25%">O</span><span class="shared">½+½</span>';
+        c.innerHTML = currentVersion === 'v1'
+          ? '<span class="x" style="font-size:48px;position:absolute;left:25%">X</span><span class="o" style="font-size:48px;position:absolute;right:25%">O</span><span class="shared">½+½</span>'
+          : '<span class="x" style="font-size:36px;position:absolute;left:15%">X</span><span class="o" style="font-size:36px;position:absolute;right:15%">O</span><span class="shared">½+½</span>';
       }
     }
 
