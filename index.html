@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tic-Tac-Toe: Next Level</title>
+<title>Tic-Tac-Toe: Classic & Next Level</title>
 <style>
 :root {
   --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
@@ -24,31 +24,31 @@ body{
   overflow-x:hidden;
 }
 
-/* 1. Splash Screen & Logo */
+/* Splash Screen */
 #splashScreen {
   position: fixed;top:0;left:0;width:100vw;height:100vh;
   background: #0a0a12;
   display:flex;flex-direction:column;justify-content:center;align-items:center;
   z-index: 9999;
-  animation: fadeOut 0.8s ease 4.5s forwards;
+  animation: fadeOut 0.8s ease 4s forwards;
 }
 .logo-box {
   position: relative;width: 110px;height: 110px;
   background: linear-gradient(45deg, var(--neon-red), var(--neon-blue));
   border-radius: 24px;display:flex;justify-content:center;align-items:center;
   box-shadow: 0 0 35px rgba(0,210,255,0.6);
-  animation: pulseLogo 1.5s infinite alternate, rotateLogo 4s infinite linear;
+  animation: rotateLogo 4s infinite linear;
 }
 .logo-icon { font-size: 50px; }
-.splash-title { margin-top: 25px; font-size: 28px; font-weight: 800; letter-spacing: 2px; text-shadow: 0 0 10px var(--neon-blue); }
+.splash-title { margin-top: 25px; font-size: 26px; font-weight: 800; letter-spacing: 2px; text-shadow: 0 0 10px var(--neon-blue); }
 .splash-loader { margin-top: 15px; width: 140px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow:hidden; }
-.splash-progress { width: 100%; height: 100%; background: var(--neon-green); animation: loadProgress 4.5s linear forwards; }
+.splash-progress { width: 100%; height: 100%; background: var(--neon-green); animation: loadProgress 4s linear forwards; }
 
 @keyframes rotateLogo { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.1) rotate(180deg); } 100% { transform: scale(1) rotate(360deg); } }
 @keyframes loadProgress { 0% { transform: translateX(-100%); } 100% { transform: translateX(0); } }
 @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-/* Main Game Interface */
+/* Main Interface */
 #mainGamePage { display: none; width: 100%; max-width: 720px; animation: fadeIn 0.6s ease forwards; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -72,14 +72,7 @@ button.opt-btn {
 button.opt-btn:hover { background: rgba(255,255,255,0.15); }
 button.opt-btn.active { background: linear-gradient(135deg, var(--neon-red), #ff0055); border: none; font-weight: bold; box-shadow: 0 0 12px var(--neon-red); }
 
-/* Language Selector Dropdown */
-.lang-select {
-  background: rgba(0, 0, 0, 0.5); color: var(--neon-gold); border: 1px solid var(--neon-blue);
-  padding: 6px 12px; border-radius: 10px; font-weight: bold; font-size: 14px; outline: none;
-  cursor: pointer;
-}
-
-/* Decorative Board Background */
+/* Game Board */
 .boardWrap { max-width: 360px; margin: 15px auto; position: relative; width: 100%; }
 .board {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
@@ -98,58 +91,76 @@ button.opt-btn.active { background: linear-gradient(135deg, var(--neon-red), #ff
 .x { color: var(--neon-red); font-size: 45px; font-weight: 900; text-shadow: 0 0 12px var(--neon-red); }
 .o { color: var(--neon-blue); font-size: 45px; font-weight: 900; text-shadow: 0 0 12px var(--neon-blue); }
 
-/* Custom Fixed Double Marks */
-.double-x-star { color: var(--neon-red); font-size: 55px; font-weight: 900; line-height: 1; text-shadow: 0 0 15px var(--neon-red); margin-top: 10px; }
+.double-x-star { color: var(--neon-red); font-size: 55px; font-weight: 900; text-shadow: 0 0 15px var(--neon-red); }
 .double-o {
   width: 40px; height: 40px; border: 4px solid var(--neon-blue); border-radius: 50%;
-  position: relative; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 15px var(--neon-blue);
+  position: relative; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px var(--neon-blue);
 }
 .double-o:after { content: ""; width: 16px; height: 16px; border: 3px solid var(--neon-blue); border-radius: 50%; }
-.star-icon { position: absolute; right: 4px; top: 2px; font-size: 14px; color: var(--neon-gold); text-shadow: 0 0 8px var(--neon-gold); }
-.shared-text { position: absolute; right: 4px; bottom: 2px; font-size: 10px; color: #bbb; font-weight: bold; }
+.star-icon { position: absolute; right: 4px; top: 2px; font-size: 14px; color: var(--neon-gold); }
 
 .winLine {
   position: absolute; height: 6px; background: var(--neon-gold); border-radius: 10px;
-  transform-origin: left center; pointer-events: none; z-index: 10;
-  box-shadow: 0 0 15px var(--neon-gold);
+  transform-origin: left center; pointer-events: none; z-index: 10; box-shadow: 0 0 15px var(--neon-gold);
 }
 .status { font-size: 18px; font-weight: bold; margin: 12px 0 5px; color: var(--neon-gold); text-align: center; }
 .score { font-size: 15px; margin-bottom: 12px; text-align: center; color: #ccc; }
-.winText { text-align: center; font-weight: bold; margin-top: 12px; color: var(--neon-green); font-size: 16px; }
 
-/* Rules Cards */
+/* Animated Cartoon TV Section */
+.cartoon-tv {
+  background: #0d1117; border: 3px solid var(--neon-gold); border-radius: 20px;
+  padding: 15px; position: relative; overflow: hidden; box-shadow: 0 0 25px rgba(255,234,0,0.25);
+}
+.tv-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#cartoonCanvas { background: #161b22; border-radius: 15px; border: 1px solid var(--card-border); }
+.speech-bubble {
+  position: relative; background: #ffffff; color: #000; border-radius: 15px;
+  padding: 10px 15px; margin-bottom: 12px; font-weight: bold; font-size: 14px;
+  max-width: 90%; text-align: center; box-shadow: 0 4px 15px rgba(255,255,255,0.3);
+}
+.speech-bubble:after {
+  content: ''; position: absolute; bottom: -10px; left: 50%;
+  border-width: 10px 10px 0; border-style: solid; border-color: #ffffff transparent;
+  display: block; width: 0; transform: translateX(-50%);
+}
+
 .rule-box {
   background: rgba(0, 0, 0, 0.3); border-left: 4px solid var(--neon-blue);
   border-radius: 12px; padding: 12px 15px; margin: 10px 0; font-size: 14px;
 }
 .rule-box b { color: var(--neon-gold); display: block; margin-bottom: 4px; }
-.rule-box ul { margin: 5px 0; padding-left: 18px; }
-.rule-box li { margin-bottom: 4px; }
-
 .footer { text-align: center; color: #888; font-size: 13px; margin-top: 15px; }
 </style>
 </head>
 
 <body>
 
-<!-- 1. Splash Screen -->
+<!-- Splash Screen -->
 <div id="splashScreen">
   <div class="logo-box"><span class="logo-icon">✕◯</span></div>
-  <div class="splash-title">NEXT LEVEL</div>
+  <div class="splash-title">TIC TAC TOE ARENA</div>
   <div class="splash-loader"><div class="splash-progress"></div></div>
 </div>
 
-<!-- 2. Main Game Interface -->
+<!-- Main Game Page -->
 <div id="mainGamePage">
 
   <div class="card">
-    <h1>✕ Tic-Tac-Toe: Next Level ◯</h1>
+    <h1>✕ Tic-Tac-Toe Arena ◯</h1>
     <div style="color:#aaa; font-size:13px; margin-top:3px;">Created by Aftab Shahriar Shawon</div>
   </div>
 
   <div class="card">
-    <h2>🎮 Game Controls</h2>
+    <h2>🎮 Game Settings</h2>
+
+    <!-- Game Mode Version Switch -->
+    <div class="controls-group">
+      <div class="controls-label">Select Game Mode Version:</div>
+      <div class="controls">
+        <button id="versionClassic" class="opt-btn" onclick="setVersion('classic')">🕹️ Classic Version</button>
+        <button id="versionNextLevel" class="opt-btn active" onclick="setVersion('nextlevel')">🚀 Next Level Version</button>
+      </div>
+    </div>
 
     <div class="controls-group">
       <div class="controls-label">Opponent:</div>
@@ -160,7 +171,7 @@ button.opt-btn.active { background: linear-gradient(135deg, var(--neon-red), #ff
     </div>
 
     <div id="botDiffGroup" class="controls-group">
-      <div class="controls-label">Bot Level:</div>
+      <div class="controls-label">Computer Level:</div>
       <div class="controls">
         <button id="diff1" class="opt-btn" onclick="setDifficulty(1)">Easy</button>
         <button id="diff2" class="opt-btn" onclick="setDifficulty(2)">Medium</button>
@@ -169,7 +180,7 @@ button.opt-btn.active { background: linear-gradient(135deg, var(--neon-red), #ff
     </div>
 
     <div class="controls-group">
-      <div class="controls-label">Start Match:</div>
+      <div class="controls-label">Action:</div>
       <div class="controls">
         <button class="opt-btn" onclick="startGame('X')">Play as X</button>
         <button class="opt-btn" onclick="startGame('O')">Play as O</button>
@@ -184,151 +195,126 @@ button.opt-btn.active { background: linear-gradient(135deg, var(--neon-red), #ff
       <div id="board" class="board"></div>
       <div id="line"></div>
     </div>
-    <div id="winText" class="winText"></div>
+    <div id="winText" style="text-align:center; font-weight:bold; color:var(--neon-green)"></div>
   </div>
 
-  <!-- Multi-Language Rules Card -->
+  <!-- Animated Cartoon Assistant -->
   <div class="card">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <h2 id="ruleTitle" style="margin:0;">📜 Game Rules</h2>
-      <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
-        <option value="bn">🇧🇩 বাংলা</option>
-        <option value="en">🇬🇧 English</option>
-        <option value="hi">🇮🇳 हिन्दी</option>
-        <option value="ru">🇷🇺 Русский</option>
-        <option value="es">🇪🇸 Español</option>
-      </select>
+    <h2>📺 Meet Aftab - Live Voice Guide</h2>
+    <div class="cartoon-tv">
+      <div class="tv-screen">
+        <div id="speechBubble" class="speech-bubble">Hi! I am Aftab! Select Classic or Next Level mode to play!</div>
+        <canvas id="cartoonCanvas" width="300" height="180"></canvas>
+      </div>
+      <div style="display:flex; justify-content:center; gap:10px; margin-top:10px;">
+        <button class="opt-btn active" onclick="speakRuleStep()">🔊 Speak Guide</button>
+      </div>
     </div>
-    
-    <div id="rulesContainer"></div>
   </div>
 
-  <div class="footer">Tic-Tac-Toe: Next Level © 2026 — Aftab Shahriar Shawon</div>
+  <!-- Rules Info -->
+  <div class="card">
+    <h2>📜 Active Mode Rules</h2>
+    <div id="activeRules" class="rule-box"></div>
+  </div>
+
+  <div class="footer">Tic-Tac-Toe Arena © 2026 — Aftab Shahriar Shawon</div>
 </div>
 
 <script>
-// Rules Translation Data
-const rulesData = {
-  bn: {
-    title: "📜 গেমের নিয়মাবলী",
-    r1Title: "১. জয়লাভের শর্ত",
-    r1Text: "যেকোনো একটি সারিতে (সোজা, খাড়া বা কোনাকুনি) ৩টি ঘর মেলাতে হবে এবং ওই সারির মোট পয়েন্ট কমপক্ষে ৩.০ হতে হবে।",
-    r2Title: "২. পয়েন্ট দেওয়ার নিয়ম",
-    r2List: [
-      "প্রথম চাল (ফাঁকা ঘরে): ১.০ পয়েন্ট",
-      "দ্বিতীয় চাল (নিজের ঘরে): ১.৫ পয়েন্ট (ডাবল * মার্ক হবে)",
-      "শেয়ার্ড ঘর (প্রতিপক্ষের ঘরে): দুজনই ০.৫ পয়েন্ট করে পাবে (½ + ½)",
-      "সীমা: একটি ঘর সর্বোচ্চ ২ বার ব্যবহার করা যাবে।"
-    ],
-    r3Title: "স্পেশাল আইকন",
-    r3List: [
-      "Double X: লাল রঙের তারা (*) চিহ্ন হয়ে যাবে।",
-      "Double O: জ্বলজ্বলে ডাবল রিং ও স্টার (★) হবে।"
-    ]
-  },
-  en: {
-    title: "📜 Game Rules",
-    r1Title: "1. Winning Requirement",
-    r1Text: "Connect 3 boxes in a row (Horizontal, Vertical, or Diagonal) and score at least 3.0 points on that line.",
-    r2Title: "2. Point System",
-    r2List: [
-      "First Use (Empty Box): 1.0 Point",
-      "Second Use (Same Player): 1.5 Points (Creates Double * Mark)",
-      "Shared Box (Opponent's Box): Both get 0.5 Point each (½ + ½)",
-      "Limit: A box can be used maximum 2 times."
-    ],
-    r3Title: "Special Icons",
-    r3List: [
-      "Double X: Converts into a Special Red Star (*).",
-      "Double O: Converts into a Glowing Double Ring with Star (★)."
-    ]
-  },
-  hi: {
-    title: "📜 खेल के नियम",
-    r1Title: "1. जीतने की शर्त",
-    r1Text: "एक पंक्ति (क्षैतिज, लंबवत, या विकर्ण) में 3 बॉक्स जोड़ें और उस लाइन पर कम से कम 3.0 अंक प्राप्त करें।",
-    r2Title: "2. अंक प्रणाली",
-    r2List: [
-      "पहला उपयोग (खाली बॉक्स): 1.0 अंक",
-      "दूसरा उपयोग (समान खिलाड़ी): 1.5 अंक (डबल * मार्क बनता है)",
-      "शेयर किया गया बॉक्स (विरोधी का बॉक्स): दोनों को 0.5 अंक मिलते हैं (½ + ½)",
-      "सीमा: एक बॉक्स का अधिकतम 2 बार उपयोग किया जा सकता है।"
-    ],
-    r3Title: "विशेष प्रतीक",
-    r3List: [
-      "Double X: एक विशेष लाल स्टार (*) में बदल जाता है।",
-      "Double O: स्टार (★) के साथ एक चमकती हुई डबल रिंग में बदल जाता है।"
-    ]
-  },
-  ru: {
-    title: "📜 Правила игры",
-    r1Title: "1. Условие победы",
-    r1Text: "Соедините 3 клетки в ряд (по горизонтали, вертикали или диагонали) и наберите не менее 3.0 очков на этой линии.",
-    r2Title: "2. Система очков",
-    r2List: [
-      "Первое использование (пустая клетка): 1.0 балл",
-      "Второе использование (тот же игрок): 1.5 балла (создает знак Двойной *)",
-      "Общая клетка (клетка соперника): Оба получают по 0.5 балла (½ + ½)",
-      "Лимит: Клетку можно использовать максимум 2 раза."
-    ],
-    r3Title: "Специальные значки",
-    r3List: [
-      "Double X: Превращается в специальную красную звезду (*).",
-      "Double O: Превращается в светящееся двойное кольцо со звездой (★)."
-    ]
-  },
-  es: {
-    title: "📜 Reglas del Juego",
-    r1Title: "1. Requisito para Ganar",
-    r1Text: "Conecta 3 casillas en línea (Horizontal, Vertical o Diagonal) y consigue al menos 3.0 puntos en esa línea.",
-    r2Title: "2. Sistema de Puntos",
-    r2List: [
-      "Primer uso (Casilla vacía): 1.0 Punto",
-      "Segundo uso (Mismo jugador): 1.5 Puntos (Crea la marca Doble *)",
-      "Casilla compartida (Casilla del oponente): Ambos obtienen 0.5 Puntos (½ + ½)",
-      "Límite: Una casilla se puede usar máximo 2 veces."
-    ],
-    r3Title: "Iconos Especiales",
-    r3List: [
-      "Double X: Se convierte en una Estrella Roja Especial (*).",
-      "Double O: Se convierte en un Anillo Doble Brillante con Estrella (★)."
-    ]
-  }
-};
+// Sound Synth Generator (No External Audio Files Needed)
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(type) {
+  try {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
 
-function changeLanguage(lang) {
-  const d = rulesData[lang] || rulesData['bn'];
-  document.getElementById('ruleTitle').textContent = d.title;
-  
-  let html = `
-    <div class="rule-box">
-      <b>${d.r1Title}</b>
-      <p style="margin:4px 0 0;">${d.r1Text}</p>
-    </div>
-    <div class="rule-box">
-      <b>${d.r2Title}</b>
-      <ul>
-        ${d.r2List.map(item => `<li>${item}</li>`).join('')}
-      </ul>
-    </div>
-    <div class="rule-box">
-      <b>${d.r3Title}</b>
-      <ul>
-        ${d.r3List.map(item => `<li>${item}</li>`).join('')}
-      </ul>
-    </div>
-  `;
-  document.getElementById('rulesContainer').innerHTML = html;
+    if (type === 'click') {
+      osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+    } else if (type === 'win') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+      osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+      osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2);
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+    }
+  } catch(e) {}
 }
 
-// Splash screen timer
-setTimeout(() => {
-  document.getElementById('splashScreen').style.display = 'none';
-  document.getElementById('mainGamePage').style.display = 'block';
-  changeLanguage('bn');
-  newGame();
-}, 5000);
+// Cartoon Canvas & Voice Logic
+const canvas = document.getElementById('cartoonCanvas');
+const ctx = canvas.getContext('2d');
+let mouthOpen = false, armAngle = 0, isSpeaking = false;
 
+function speakText(text) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.pitch = 1.6; u.rate = 0.95;
+    u.onstart = () => { isSpeaking = true; };
+    u.onend = () => { isSpeaking = false; mouthOpen = false; };
+    window.speechSynthesis.speak(u);
+  }
+}
+
+function drawAftab() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Character Body
+  ctx.fillStyle = "#00d2ff";
+  ctx.beginPath(); ctx.arc(150, 110, 35, 0, Math.PI * 2); ctx.fill();
+
+  // Eyes
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath();
+  ctx.arc(140, 100, 8, 0, Math.PI * 2);
+  ctx.arc(160, 100, 8, 0, Math.PI * 2); ctx.fill();
+
+  ctx.fillStyle = "#000000";
+  ctx.beginPath();
+  ctx.arc(142, 100, 3, 0, Math.PI * 2);
+  ctx.arc(162, 100, 3, 0, Math.PI * 2); ctx.fill();
+
+  // Mouth Animation
+  ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.beginPath();
+  if(isSpeaking && mouthOpen) {
+    ctx.fillStyle = "#ff3366"; ctx.arc(150, 118, 7, 0, Math.PI); ctx.fill();
+  } else {
+    ctx.arc(150, 115, 6, 0, Math.PI); ctx.stroke();
+  }
+
+  // Waving Hand
+  ctx.strokeStyle = "#00d2ff"; ctx.lineWidth = 6; ctx.beginPath();
+  ctx.moveTo(180, 110);
+  ctx.lineTo(205 + Math.sin(armAngle) * 10, 90 + Math.cos(armAngle) * 10);
+  ctx.stroke();
+}
+
+function animateAftab() {
+  armAngle += 0.1;
+  if(isSpeaking && Math.random() < 0.3) mouthOpen = !mouthOpen;
+  drawAftab();
+  requestAnimationFrame(animateAftab);
+}
+animateAftab();
+
+function speakRuleStep() {
+  let msg = gameVersion === 'classic' 
+    ? "In Classic Mode, line up 3 same symbols to win the game!" 
+    : "In Next Level Mode, earn at least 3 points by double moves or shared spots!";
+  document.getElementById('speechBubble').textContent = msg;
+  speakText(msg);
+}
+
+// Game Core Logic
+let gameVersion = 'nextlevel'; // 'classic' or 'nextlevel'
 let opponentMode = 'bot', botLevel = 3;
 let human = 'X', computer = 'O', turn = 'X', gameOver = true;
 let board = Array(9).fill('');
@@ -336,11 +322,42 @@ let uses = Array(9).fill(0);
 let pts = { X: Array(9).fill(0), O: Array(9).fill(0) };
 let round = 0;
 
-const lines = [
- [0,1,2],[3,4,5],[6,7,8],
- [0,3,6],[1,4,7],[2,5,8],
- [0,4,8],[2,4,6]
-];
+const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
+setTimeout(() => {
+  document.getElementById('splashScreen').style.display = 'none';
+  document.getElementById('mainGamePage').style.display = 'block';
+  updateRulesText();
+  newGame();
+}, 4000);
+
+function setVersion(ver) {
+  gameVersion = ver;
+  document.getElementById('versionClassic').classList.toggle('active', ver==='classic');
+  document.getElementById('versionNextLevel').classList.toggle('active', ver==='nextlevel');
+  updateRulesText();
+  newGame();
+}
+
+function updateRulesText() {
+  const container = document.getElementById('activeRules');
+  if(gameVersion === 'classic') {
+    container.innerHTML = `
+      <b>🕹️ Classic Tic-Tac-Toe Rules:</b>
+      <ul>
+        <li>এক চাল ১টি ঘরেই দেওয়া যাবে।</li>
+        <li>সোজা, খাড়া বা কোনাকুনি ৩টি নিজের চিহ্ন মেলালেই জয়।</li>
+      </ul>`;
+  } else {
+    container.innerHTML = `
+      <b>🚀 Next Level Rules:</b>
+      <ul>
+        <li>ফাঁকা ঘর: ১.০ পয়েন্ট | নিজের ঘরে ২য় চাল: ১.৫ পয়েন্ট</li>
+        <li>প্রতিপক্ষের ঘরে চাল: দুজনের শেয়ার্ড ০.৫ পয়েন্ট (½ + ½)</li>
+        <li>জয়ের জন্য ৩টি চিহ্ন মেলার পাশাপাশি ওই সারিতে কমপক্ষে ৩.০ পয়েন্ট হতে হবে।</li>
+      </ul>`;
+  }
+}
 
 function setOpponent(mode) {
   opponentMode = mode;
@@ -391,36 +408,51 @@ function render() {
   for(let i=0; i<9; i++) {
     const c = document.createElement('button');
     c.className = 'cell';
-    c.disabled = gameOver || (opponentMode === 'bot' && turn !== human) || uses[i] >= 2;
+    
+    // Disable rules depending on mode
+    const maxUses = gameVersion === 'classic' ? 1 : 2;
+    c.disabled = gameOver || (opponentMode === 'bot' && turn !== human) || uses[i] >= maxUses;
     c.onclick = () => makeMove(i);
 
     if(uses[i] === 1) {
       c.innerHTML = board[i] === 'X' ? '<span class="x">X</span>' : '<span class="o">O</span>';
     }
 
-    if(uses[i] === 2) {
+    if(gameVersion === 'nextlevel' && uses[i] === 2) {
       if(board[i] === 'X') {
         c.innerHTML = '<span class="double-x-star">*</span>';
       } else if(board[i] === 'O') {
         c.innerHTML = '<span class="double-o"></span><span class="star-icon">★</span>';
       } else {
-        c.innerHTML = '<span class="x" style="font-size:26px;position:absolute;left:8%">X</span><span class="o" style="font-size:26px;position:absolute;right:8%">O</span><span class="shared-text">½+½</span>';
+        c.innerHTML = '<span class="x" style="font-size:24px;position:absolute;left:8%">X</span><span class="o" style="font-size:24px;position:absolute;right:8%">O</span>';
       }
     }
     b.appendChild(c);
   }
 
-  document.getElementById('youScore').textContent = score(human);
-  document.getElementById('cpuScore').textContent = score(computer);
+  document.getElementById('youScore').textContent = gameVersion === 'classic' ? getClassicScore(human) : score(human);
+  document.getElementById('cpuScore').textContent = gameVersion === 'classic' ? getClassicScore(computer) : score(computer);
+}
+
+function getClassicScore(p) {
+  return board.filter(x => x === p).length;
 }
 
 function place(i, p) {
-  if(uses[i] >= 2) return false;
+  const maxUses = gameVersion === 'classic' ? 1 : 2;
+  if(uses[i] >= maxUses) return false;
   uses[i]++;
-  if(uses[i] === 1) { board[i] = p; pts[p][i] = 1; }
-  else {
-    if(board[i] === p) { pts[p][i] = 1.5; }
-    else { board[i] = 'XO'; pts.X[i] = 0.5; pts.O[i] = 0.5; }
+  playSound('click');
+
+  if(gameVersion === 'classic') {
+    board[i] = p;
+    pts[p][i] = 1;
+  } else {
+    if(uses[i] === 1) { board[i] = p; pts[p][i] = 1; }
+    else {
+      if(board[i] === p) { pts[p][i] = 1.5; }
+      else { board[i] = 'XO'; pts.X[i] = 0.5; pts.O[i] = 0.5; }
+    }
   }
   return true;
 }
@@ -431,7 +463,7 @@ function winningLine(p) {
   for(const line of lines) {
     if(line.every(i => hasSign(i, p))) {
       const total = pts[p][line[0]] + pts[p][line[1]] + pts[p][line[2]];
-      if(total >= 3) return { line, total };
+      if(gameVersion === 'classic' || total >= 3) return { line, total };
     }
   }
   return null;
@@ -439,11 +471,18 @@ function winningLine(p) {
 
 function finish(p, w) {
   gameOver = true;
+  playSound('win');
   const winMsg = opponentMode === 'bot' 
     ? (p === human ? 'You Win! 🏆' : 'Computer Wins! 🤖')
     : ('Player ' + p + ' Wins! 🏆');
   setStatus(winMsg);
-  document.getElementById('winText').textContent = 'Winning Line Score: ' + w.total;
+  
+  if(gameVersion === 'nextlevel') {
+    document.getElementById('winText').textContent = 'Winning Line Score: ' + w.total;
+  }
+  
+  // Voice celebration
+  speakText(p === human ? "Congratulations! You won!" : "Game Over!");
   render();
   setTimeout(() => drawLine(w.line), 50);
 }
@@ -451,14 +490,17 @@ function finish(p, w) {
 function afterMove(p) {
   const w = winningLine(p);
   if(w) { finish(p, w); return true; }
-  if(uses.every(x => x === 2)) {
-    gameOver = true; setStatus('Draw — All boxes filled!'); render(); return true;
+  
+  const maxUses = gameVersion === 'classic' ? 1 : 2;
+  if(uses.every(x => x >= maxUses)) {
+    gameOver = true; setStatus('Draw — Board Full!'); render(); return true;
   }
   return false;
 }
 
 function makeMove(i) {
-  if(gameOver || uses[i] >= 2) return;
+  const maxUses = gameVersion === 'classic' ? 1 : 2;
+  if(gameOver || uses[i] >= maxUses) return;
   const p = turn;
   place(i, p);
   if(afterMove(p)) return;
@@ -481,8 +523,9 @@ function testMove(i, p) { const s = save(); place(i, p); const w = winningLine(p
 
 function computerMove() {
   if(gameOver) return;
+  const maxUses = gameVersion === 'classic' ? 1 : 2;
   const avail = [];
-  for(let i=0; i<9; i++) if(uses[i] < 2) avail.push(i);
+  for(let i=0; i<9; i++) if(uses[i] < maxUses) avail.push(i);
   if(!avail.length) return;
 
   let move;
@@ -493,10 +536,10 @@ function computerMove() {
   } else {
     move = avail.find(i => testMove(i, computer));
     if(move === undefined) move = avail.find(i => testMove(i, human));
-    if(move === undefined && uses[4] < 2) move = 4;
+    if(move === undefined && uses[4] < maxUses) move = 4;
     if(move === undefined) {
       const order = [0,2,6,8,1,3,5,7];
-      move = order.find(i => uses[i] < 2);
+      move = order.find(i => uses[i] < maxUses);
     }
     if(move === undefined) move = avail[0];
   }
@@ -529,4 +572,4 @@ function drawLine(indexes) {
 }
 </script>
 </body>
-  </html>
+</html>
