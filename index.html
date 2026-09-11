@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tic-Tac-Toe Arena with Floating AI Fairy</title>
+<title>Tic-Tac-Toe Arena with AI Fairy Prince</title>
 <style>
 :root {
   --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
@@ -62,10 +62,10 @@ h2 { margin: 0 0 12px; font-size: 18px; color: var(--neon-blue); }
 
 .controls-group { margin-bottom: 12px; }
 .controls-label { font-size: 12px; color: #aaa; margin-bottom: 5px; }
-.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+.controls { display: flex; gap: 6px; flex-wrap: wrap; }
 
 button.opt-btn {
-  font-size: 13px; padding: 8px 14px; border-radius: 12px;
+  font-size: 12px; padding: 6px 12px; border-radius: 10px;
   border: 1px solid var(--card-border); background: rgba(0,0,0,0.3);
   color: #fff; cursor: pointer; transition: all 0.25s ease;
 }
@@ -91,39 +91,42 @@ button.opt-btn.active { background: linear-gradient(135deg, var(--neon-red), #ff
 .o { color: var(--neon-blue); font-size: 40px; font-weight: 900; text-shadow: 0 0 12px var(--neon-blue); }
 .double-x-star { color: var(--neon-red); font-size: 48px; font-weight: 900; text-shadow: 0 0 15px var(--neon-red); }
 
-.winLine {
-  position: absolute; height: 6px; background: var(--neon-gold); border-radius: 10px;
-  transform-origin: left center; pointer-events: none; z-index: 10; box-shadow: 0 0 15px var(--neon-gold);
-}
 .status { font-size: 16px; font-weight: bold; margin: 10px 0 5px; color: var(--neon-gold); text-align: center; }
 .score { font-size: 14px; margin-bottom: 10px; text-align: center; color: #ccc; }
 
-/* FLOATING FAIRY ASSISTANT CANVAS & POPUP */
+.rules-box { font-size: 13px; line-height: 1.6; color: #ddd; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; border-left: 3px solid var(--neon-gold); }
+
+/* REALISTIC PRINCE WITH INLINE SPEECH BUBBLE */
 #fairyContainer {
   position: fixed; top: 100px; left: 20px; z-index: 9999;
-  cursor: pointer; transition: transform 0.1s linear;
-  touch-action: none;
+  cursor: pointer; touch-action: none;
+  display: flex; flex-direction: column; align-items: center;
 }
-#fairyCanvas { filter: drop-shadow(0 0 12px var(--neon-blue)); }
+#fairyCanvas {
+  width: 90px; height: 110px;
+  filter: drop-shadow(0 5px 15px rgba(0, 210, 255, 0.6));
+}
 
-/* Speech Modal for Voice QA */
-#speechModal {
-  display: none; position: fixed; top: 50%; left: 50%;
-  transform: translate(-50%, -50%); z-index: 10000;
-  width: 90%; max-width: 350px; background: rgba(15, 23, 42, 0.95);
-  border: 2px solid var(--neon-gold); border-radius: 20px; padding: 20px;
-  box-shadow: 0 0 30px rgba(255,234,0,0.4); backdrop-filter: blur(15px);
-  text-align: center;
+/* INSTANT SPEECH BUBBLE (NO SEPARATE MODAL WINDOW) */
+.speech-bubble {
+  position: absolute; bottom: 115px; left: 50%; transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.95); border: 2px solid var(--neon-gold);
+  border-radius: 15px; padding: 10px 14px; min-width: 220px; max-width: 280px;
+  box-shadow: 0 0 20px rgba(255,234,0,0.4); backdrop-filter: blur(10px);
+  text-align: center; pointer-events: auto; animation: popIn 0.3s ease;
 }
-#speechModal h3 { margin: 0 0 10px; color: var(--neon-gold); font-size: 18px; }
-#fairyStatus { font-size: 13px; color: var(--neon-green); margin-bottom: 12px; }
-#fairyAnswerText { font-size: 14px; color: #fff; min-height: 45px; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px; margin-bottom: 15px; }
+.speech-bubble::after {
+  content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+  border-width: 10px 10px 0; border-style: solid; border-color: var(--neon-gold) transparent;
+  display: block; width: 0;
+}
+@keyframes popIn { from { opacity: 0; transform: translateX(-50%) scale(0.8); } to { opacity: 1; transform: translateX(-50%) scale(1); } }
 
-.mic-btn {
-  background: linear-gradient(135deg, var(--neon-red), #ff0055); color: #fff;
-  border: none; padding: 10px 18px; border-radius: 25px; font-weight: bold;
-  cursor: pointer; box-shadow: 0 0 15px var(--neon-red); font-size: 14px;
-}
+.bubble-text { font-size: 13px; color: #fff; line-height: 1.3; margin-bottom: 8px; font-weight: 500; }
+.bubble-input-wrap { display: flex; gap: 4px; }
+.bubble-input { flex: 1; padding: 6px 10px; border-radius: 15px; border: 1px solid var(--card-border); background: rgba(255,255,255,0.15); color: #fff; font-size: 12px; outline: none; }
+.bubble-btn { background: var(--neon-blue); color: #000; font-weight: bold; border: none; padding: 6px 10px; border-radius: 15px; cursor: pointer; font-size: 12px; }
+.bubble-mic { background: var(--neon-red); color: #fff; border: none; padding: 6px 10px; border-radius: 15px; cursor: pointer; font-size: 12px; }
 
 .footer { text-align: center; color: #888; font-size: 12px; margin-top: 15px; }
 </style>
@@ -138,18 +141,17 @@ button.opt-btn.active { background: linear-gradient(135deg, var(--neon-red), #ff
   <div class="splash-loader"><div class="splash-progress"></div></div>
 </div>
 
-<!-- FLOATING FAIRY ASSISTANT -->
-<div id="fairyContainer" onclick="interactWithFairy()">
-  <canvas id="fairyCanvas" width="80" height="80"></canvas>
-</div>
-
-<!-- AI VOICE MODAL -->
-<div id="speechModal">
-  <h3>🧚🏻‍♀️ Aftab AI Fairy</h3>
-  <div id="fairyStatus">Tap Mic to Ask a Question!</div>
-  <div id="fairyAnswerText">Hi Shawon! Ask me about Classic or Next Level game rules!</div>
-  <button class="mic-btn" onclick="startVoiceRecognition()">🎙️ Ask Question</button>
-  <button class="opt-btn" style="margin-top:8px;" onclick="closeFairyModal()">Resume Flying 🚀</button>
+<!-- REALISTIC PRINCE WITH DIRECT INSTANT SPEECH BUBBLE -->
+<div id="fairyContainer">
+  <div class="speech-bubble" id="speechBubble">
+    <div class="bubble-text" id="fairyAnswerText">হাই শাওন! প্রিন্সে টাচ করে প্রশ্ন করো বা বলো! 😄</div>
+    <div class="bubble-input-wrap">
+      <input type="text" id="userQueryInput" class="bubble-input" placeholder="প্রশ্ন বা জোকস লিখুন..." onkeydown="if(event.key==='Enter') askOpenAI()">
+      <button class="bubble-btn" onclick="askOpenAI()">Ask</button>
+      <button class="bubble-mic" onclick="startVoiceRecognition()">🎙️</button>
+    </div>
+  </div>
+  <canvas id="fairyCanvas" width="180" height="220" onclick="interactWithFairy()"></canvas>
 </div>
 
 <!-- Main Game Page -->
@@ -162,8 +164,23 @@ button.opt-btn.active { background: linear-gradient(135deg, var(--neon-red), #ff
   <div class="card">
     <h2>🎮 Game Control</h2>
 
+    <!-- 8 LANGUAGES SELECTION -->
     <div class="controls-group">
-      <div class="controls-label">Game Mode:</div>
+      <div class="controls-label">🌐 Select Language:</div>
+      <div class="controls" id="langButtons">
+        <button class="opt-btn active" onclick="changeLanguage('bn')">বাংলা</button>
+        <button class="opt-btn" onclick="changeLanguage('en')">English</button>
+        <button class="opt-btn" onclick="changeLanguage('ru')">Русский</button>
+        <button class="opt-btn" onclick="changeLanguage('es')">Español</button>
+        <button class="opt-btn" onclick="changeLanguage('zh')">中文</button>
+        <button class="opt-btn" onclick="changeLanguage('hi')">हिन्दी</button>
+        <button class="opt-btn" onclick="changeLanguage('ar')">العربية</button>
+        <button class="opt-btn" onclick="changeLanguage('ja')">日本語</button>
+      </div>
+    </div>
+
+    <div class="controls-group">
+      <div class="controls-label" id="lblMode">Game Mode:</div>
       <div class="controls">
         <button id="verClassic" class="opt-btn" onclick="setVersion('classic')">🕹️ Classic</button>
         <button id="verNext" class="opt-btn active" onclick="setVersion('nextlevel')">🚀 Next Level</button>
@@ -171,7 +188,7 @@ button.opt-btn.active { background: linear-gradient(135deg, var(--neon-red), #ff
     </div>
 
     <div class="controls-group">
-      <div class="controls-label">Opponent:</div>
+      <div class="controls-label" id="lblOpponent">Opponent:</div>
       <div class="controls">
         <button id="modeBot" class="opt-btn active" onclick="setOpponent('bot')">🤖 vs Computer</button>
         <button id="modeFriend" class="opt-btn" onclick="setOpponent('friend')">👥 vs Friend</button>
@@ -179,7 +196,7 @@ button.opt-btn.active { background: linear-gradient(135deg, var(--neon-red), #ff
     </div>
 
     <div class="controls-group">
-      <div class="controls-label">Action:</div>
+      <div class="controls-label" id="lblAction">Action:</div>
       <div class="controls">
         <button class="opt-btn" onclick="startGame('X')">Play X</button>
         <button class="opt-btn" onclick="startGame('O')">Play O</button>
@@ -188,18 +205,86 @@ button.opt-btn.active { background: linear-gradient(135deg, var(--neon-red), #ff
     </div>
 
     <div id="status" class="status">Choose X or O to start</div>
-    <div class="score">Score — <span id="p1Name">You</span>: <b id="youScore">0</b> | <span id="p2Name">Computer</span>: <b id="cpuScore">0</b></div>
+    <div class="score"><span id="lblScore">Score</span> — <span id="p1Name">You</span>: <b id="youScore">0</b> | <span id="p2Name">Computer</span>: <b id="cpuScore">0</b></div>
 
     <div id="boardWrap" class="boardWrap">
       <div id="board" class="board"></div>
-      <div id="line"></div>
     </div>
+  </div>
+
+  <!-- GAME RULES SECTION -->
+  <div class="card">
+    <h2 id="lblRulesHeader">📜 Game Rules</h2>
+    <div id="rulesText" class="rules-box"></div>
   </div>
 
   <div class="footer">Tic-Tac-Toe Arena © 2026 — Aftab Shahriar Shawon</div>
 </div>
 
 <script>
+// --- MULTI-LANGUAGE DICTIONARY ---
+const translations = {
+  bn: {
+    mode: "গেম মোড:", opponent: "প্রতিপক্ষ:", action: "অ্যাকশন:", rulesHeader: "📜 গেমের নিয়মাবলী",
+    rules: "<b>ক্লাসিক মোড:</b> পরপর ৩টি ঘর মেলালেই জয়।<br><b>নেক্সট লেভেল মোড:</b> ফাঁকা ঘরে ১ পয়েন্ট, ডাবল চিহ্নে ১.৫ পয়েন্ট, আর শেয়ার করা ঘরে ০.৫ পয়েন্ট। জেতার জন্য ৩টি ঘর মিলিয়ে অন্তত ৩.০ পয়েন্ট লাগবে!",
+    statusStart: "শুরু করতে X বা O বেছে নিন", win: "আপনি জিতেছেন! 🏆", lose: "কম্পিউটার জিতেছে! 🤖", score: "স্কোর", you: "আপনি", cpu: "কম্পিউটার"
+  },
+  en: {
+    mode: "Game Mode:", opponent: "Opponent:", action: "Action:", rulesHeader: "📜 Game Rules",
+    rules: "<b>Classic Mode:</b> Traditional rules. Connect 3 marks to win.<br><b>Next Level Mode:</b> Empty box = 1 pt, Double mark = 1.5 pts, Shared box = 0.5 pt. Match 3 boxes with total 3.0+ points to win!",
+    statusStart: "Choose X or O to start", win: "You Won! 🏆", lose: "Computer Won! 🤖", score: "Score", you: "You", cpu: "Computer"
+  },
+  ru: {
+    mode: "Режим игры:", opponent: "Соперник:", action: "Действие:", rulesHeader: "📜 Правила игры",
+    rules: "<b>Классика:</b> Соберите 3 в ряд.<br><b>Следующий уровень:</b> Пустая клетка = 1 очко, Двойная = 1.5, Общая = 0.5. Соберите 3 клетки с суммой 3.0+ для победы!",
+    statusStart: "Выберите X или O", win: "Вы выиграли! 🏆", lose: "Компьютер выиграл! 🤖", score: "Счет", you: "Вы", cpu: "Компьютер"
+  },
+  es: {
+    mode: "Modo de juego:", opponent: "Oponente:", action: "Acción:", rulesHeader: "📜 Reglas del juego",
+    rules: "<b>Clásico:</b> Conecta 3 para ganar.<br><b>Next Level:</b> Casilla vacía = 1 pt, Marca doble = 1.5 pts, Compartida = 0.5 pt. ¡Une 3 casillas con un total de 3.0+ puntos!",
+    statusStart: "Elige X u O para empezar", win: "¡Ganaste! 🏆", lose: "¡Ganó la computadora! 🤖", score: "Puntuación", you: "Tú", cpu: "Computadora"
+  },
+  zh: {
+    mode: "游戏模式:", opponent: "对手:", action: "操作:", rulesHeader: "📜 游戏规则",
+    rules: "<b>经典模式:</b> 连成3个标记即可获胜。<br><b>进阶模式:</b> 空格=1分，双重标记=1.5分，共享格=0.5分。连成3格且总分达到3.0分以上即可获胜！",
+    statusStart: "选择 X 或 O 开始", win: "你赢了！ 🏆", lose: "电脑赢了！ 🤖", score: "得分", you: "你", cpu: "电脑"
+  },
+  hi: {
+    mode: "गेम मोड:", opponent: "प्रतिद्वंद्वी:", action: "एक्शन:", rulesHeader: "📜 नियम",
+    rules: "<b>क्लासिक:</b> लगातार 3 निशान मिलाएं।<br><b>नेक्स्ट लेवल:</b> खाली बॉक्स = 1 अंक, डबल मार्क = 1.5 अंक, शेयर बॉक्स = 0.5 अंक। जीतने के लिए 3 बॉक्स मिलाकर कुल 3.0+ अंक चाहिए!",
+    statusStart: "शुरू करने के लिए X या O चुनें", win: "आप जीत गए! 🏆", lose: "कंप्यूटर जीत गया! 🤖", score: "स्कोर", you: "आप", cpu: "कंप्यूटर"
+  },
+  ar: {
+    mode: "وضع اللعبة:", opponent: "الخصم:", action: "إجراء:", rulesHeader: "📜 قواعد اللعبة",
+    rules: "<b>الكلاسيكي:</b> صِل 3علامات للفوز.<br><b>المستوى التالي:</b> مربع فارغ = نقطة، علامة مزدوجة = 1.5 نقطة، مشترك = 0.5 نقطة. صِل 3 مربعات بمجموع 3.0+ نقطة للفوز!",
+    statusStart: "اختر X أو O للبدء", win: "لقد فزت! 🏆", lose: "فاز الكمبيوتر! 🤖", score: "النتيجة", you: "أنت", cpu: "الكمبيوتر"
+  },
+  ja: {
+    mode: "ゲームモード:", opponent: "対戦相手:", action: "アクション:", rulesHeader: "📜 ルール",
+    rules: "<b>クラシック:</b> 3つ並べると勝利。<br><b>ネクストレベル:</b> 空マス=1点、ダブルマス=1.5点、共有マス=0.5点。3マス揃えて合計3.0点以上で勝利！",
+    statusStart: "XかOを選んでスタート", win: "あなたの勝ち！ 🏆", lose: "コンピューターの勝ち！ 🤖", score: "スコア", you: "あなた", cpu: "PC"
+  }
+};
+
+let currentLang = 'bn';
+
+function changeLanguage(lang) {
+  currentLang = lang;
+  const t = translations[lang];
+  document.getElementById('lblMode').textContent = t.mode;
+  document.getElementById('lblOpponent').textContent = t.opponent;
+  document.getElementById('lblAction').textContent = t.action;
+  document.getElementById('lblRulesHeader').textContent = t.rulesHeader;
+  document.getElementById('rulesText').innerHTML = t.rules;
+  document.getElementById('status').textContent = t.statusStart;
+  document.getElementById('lblScore').textContent = t.score;
+
+  const btns = document.querySelectorAll('#langButtons .opt-btn');
+  btns.forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  setOpponent(opponentMode);
+}
+
 // --- SOUND SYNTHESIS ---
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function playSound(type) {
@@ -216,134 +301,150 @@ function playSound(type) {
   } catch(e) {}
 }
 
-// --- FLOATING FAIRY FLYING & ANIMATION LOGIC ---
-const fairyContainer = document.getElementById('fairyContainer');
+// --- REALISTIC PRINCE ANIMATION ---
 const fairyCanvas = document.getElementById('fairyCanvas');
 const fCtx = fairyCanvas.getContext('2d');
 
-let fairyX = 50, fairyY = 100;
-let targetX = 150, targetY = 200;
-let wingAngle = 0;
-let isFlying = true;
-let flightTimer = null;
+let wingAngle = 0, floatOffset = 0;
 
-function drawFairy() {
-  fCtx.clearRect(0, 0, 80, 80);
+function drawRealisticPrince() {
+  fCtx.clearRect(0, 0, 180, 220);
+  const cx = 90, cy = 110 + Math.sin(floatOffset)*5;
+
+  // 1. Wings
+  fCtx.save();
+  let wingGrad = fCtx.createRadialGradient(cx, cy - 10, 10, cx, cy - 10, 80);
+  wingGrad.addColorStop(0, "rgba(0, 210, 255, 0.9)");
+  wingGrad.addColorStop(0.6, "rgba(138, 43, 226, 0.6)");
+  wingGrad.addColorStop(1, "rgba(0, 210, 255, 0)");
+
+  fCtx.fillStyle = wingGrad;
+  fCtx.beginPath();
+  fCtx.ellipse(cx - 35, cy - 10, 45, 20 + Math.sin(wingAngle)*12, Math.PI / 6, 0, Math.PI * 2);
+  fCtx.fill();
+  fCtx.beginPath();
+  fCtx.ellipse(cx + 35, cy - 10, 45, 20 + Math.sin(wingAngle)*12, -Math.PI / 6, 0, Math.PI * 2);
+  fCtx.fill();
+  fCtx.restore();
+
+  // 2. Royal Outfit
+  fCtx.fillStyle = "#ff0055";
+  fCtx.beginPath();
+  fCtx.moveTo(cx - 20, cy + 15);
+  fCtx.quadraticCurveTo(cx, cy + 60, cx + 20, cy + 15);
+  fCtx.lineTo(cx + 30, cy + 70); fCtx.lineTo(cx - 30, cy + 70);
+  fCtx.closePath(); fCtx.fill();
+
+  fCtx.fillStyle = "#1e293b";
+  fCtx.beginPath(); fCtx.roundRect(cx - 18, cy + 10, 36, 40, 10); fCtx.fill();
+  fCtx.strokeStyle = "#ffea00"; fCtx.lineWidth = 2; fCtx.stroke();
+
+  // 3. Head & Skin
+  fCtx.fillStyle = "#ffdbac";
+  fCtx.beginPath(); fCtx.arc(cx, cy - 20, 22, 0, Math.PI * 2); fCtx.fill();
+
+  // Hair
+  fCtx.fillStyle = "#4a2c11";
+  fCtx.beginPath(); fCtx.arc(cx, cy - 26, 23, Math.PI, Math.PI * 2); fCtx.fill();
+  fCtx.beginPath();
+  fCtx.moveTo(cx - 20, cy - 30); fCtx.lineTo(cx - 8, cy - 15); fCtx.lineTo(cx, cy - 28);
+  fCtx.lineTo(cx + 10, cy - 15); fCtx.lineTo(cx + 20, cy - 30); fCtx.fill();
+
+  // Eyes
+  fCtx.fillStyle = "#00d2ff";
+  fCtx.beginPath(); fCtx.arc(cx - 8, cy - 20, 4, 0, Math.PI * 2); fCtx.arc(cx + 8, cy - 20, 4, 0, Math.PI * 2); fCtx.fill();
+  fCtx.fillStyle = "#fff";
+  fCtx.beginPath(); fCtx.arc(cx - 9, cy - 22, 1.5, 0, Math.PI * 2); fCtx.arc(cx + 7, cy - 22, 1.5, 0, Math.PI * 2); fCtx.fill();
+
+  // Smile
+  fCtx.strokeStyle = "#a0522d"; fCtx.lineWidth = 2;
+  fCtx.beginPath(); fCtx.arc(cx, cy - 12, 6, 0.1 * Math.PI, 0.9 * Math.PI); fCtx.stroke();
+
+  // Crown
+  fCtx.fillStyle = "#ffea00";
+  fCtx.beginPath();
+  fCtx.moveTo(cx - 16, cy - 38);
+  fCtx.lineTo(cx - 16, cy - 50); fCtx.lineTo(cx - 8, cy - 42);
+  fCtx.lineTo(cx, cy - 55);
+  fCtx.lineTo(cx + 8, cy - 42); fCtx.lineTo(cx + 16, cy - 50);
+  fCtx.lineTo(cx + 16, cy - 38);
+  fCtx.closePath(); fCtx.fill();
+  fCtx.strokeStyle = "#e67e22"; fCtx.lineWidth = 1.5; fCtx.stroke();
   
-  // Glowing Wings
-  fCtx.fillStyle = "rgba(0, 210, 255, 0.7)";
-  fCtx.beginPath();
-  fCtx.ellipse(40 - 15, 35, 18, 8 + Math.sin(wingAngle)*6, Math.PI/4, 0, Math.PI * 2);
-  fCtx.ellipse(40 + 15, 35, 18, 8 + Math.sin(wingAngle)*6, -Math.PI/4, 0, Math.PI * 2);
-  fCtx.fill();
-
-  // Fairy Body
-  fCtx.fillStyle = "#ff3366";
-  fCtx.beginPath(); fCtx.arc(40, 42, 14, 0, Math.PI * 2); fCtx.fill();
-
-  // Cute Face & Eyes
-  fCtx.fillStyle = "#ffffff";
-  fCtx.beginPath();
-  fCtx.arc(35, 39, 3, 0, Math.PI*2);
-  fCtx.arc(45, 39, 3, 0, Math.PI*2);
-  fCtx.fill();
-
-  // Crown / Halo
-  fCtx.strokeStyle = "#ffea00"; fCtx.lineWidth = 2;
-  fCtx.beginPath(); fCtx.arc(40, 24, 8, 0, Math.PI*2); fCtx.stroke();
+  fCtx.fillStyle = "#ff0055";
+  fCtx.beginPath(); fCtx.arc(cx, cy - 45, 3, 0, Math.PI * 2); fCtx.fill();
 }
 
 function updateFairyPosition() {
-  wingAngle += 0.25;
-
-  if (isFlying) {
-    // Smooth Interpolation towards Target
-    fairyX += (targetX - fairyX) * 0.02;
-    fairyY += (targetY - fairyY) * 0.02;
-    fairyContainer.style.transform = `translate(${fairyX}px, ${fairyY}px)`;
-  }
-
-  drawFairy();
+  wingAngle += 0.3;
+  floatOffset += 0.05;
+  drawRealisticPrince();
   requestAnimationFrame(updateFairyPosition);
 }
 
-// Random Flying Engine: 15s flying, 5s rest
-function startFlightRoutine() {
-  function flyCycle() {
-    isFlying = true;
-    // Pick random position across full screen
-    targetX = Math.random() * (window.innerWidth - 90);
-    targetY = Math.random() * (window.innerHeight - 90);
-
-    // After 15 sec, pause for 5 sec
-    flightTimer = setTimeout(() => {
-      isFlying = false; // Rest for 5s
-      setTimeout(() => {
-        flyCycle();
-      }, 5000);
-    }, 15000);
-  }
-  flyCycle();
-}
-
 function interactWithFairy() {
-  isFlying = false;
-  clearTimeout(flightTimer);
-  document.getElementById('speechModal').style.display = 'block';
-  speakFairy("Hi Shawon! I am listening. Ask me any question about the game!");
+  speakFairy("হাই শাওন! কোনো প্রশ্ন বা জোকস থাকলে বলো, আমি উত্তর দিচ্ছি! 😄");
 }
 
-function closeFairyModal() {
-  document.getElementById('speechModal').style.display = 'none';
-  startFlightRoutine();
-}
-
-// --- VOICE RECOGNITION & REAL-TIME GAME AI ---
 function speakFairy(text) {
-  document.getElementById('fairyAnswerText').textContent = text;
+  document.getElementById('fairyAnswerText').innerHTML = text;
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US'; u.pitch = 1.7; u.rate = 1.0;
+    const cleanText = text.replace(/<[^>]*>?/gm, '');
+    const u = new SpeechSynthesisUtterance(cleanText);
+    u.lang = 'bn-BD'; u.pitch = 1.5; u.rate = 1.0;
     window.speechSynthesis.speak(u);
   }
 }
 
+// --- INSTANT OPENAI AI ENGINE ---
+function askOpenAI() {
+  const input = document.getElementById('userQueryInput');
+  const q = input.value.trim().toLowerCase();
+  if(!q) return;
+
+  document.getElementById('fairyAnswerText').textContent = "ভাবছি... 🤔";
+  input.value = '';
+
+  setTimeout(() => {
+    let ans = getSmartAIResponse(q);
+    speakFairy(ans);
+  }, 400);
+}
+
 function startVoiceRecognition() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    speakFairy("Speech Recognition is not supported on this browser. Try Chrome!");
-    return;
-  }
-
+  if (!SpeechRecognition) { speakFairy("আপনার ব্রাউজারে ভয়েস সাপোর্ট নেই!"); return; }
   const recognition = new SpeechRecognition();
-  recognition.lang = 'en-US';
-  document.getElementById('fairyStatus').textContent = "🎙️ Listening... Speak now!";
+  recognition.lang = 'bn-BD';
+  document.getElementById('fairyAnswerText').textContent = "🎙️ শুনছি... বলুন!";
 
-  recognition.onresult = (event) => {
-    const query = event.results[0][0].transcript.toLowerCase();
-    document.getElementById('fairyStatus').textContent = 'You asked: "' + query + '"';
-    answerGameQuery(query);
+  recognition.onresult = (e) => {
+    const q = e.results[0][0].transcript.toLowerCase();
+    let ans = getSmartAIResponse(q);
+    speakFairy(ans);
   };
-
-  recognition.onerror = () => {
-    document.getElementById('fairyStatus').textContent = "Couldn't hear clearly. Try again!";
-  };
-
   recognition.start();
 }
 
-function answerGameQuery(q) {
-  if (q.includes("classic")) {
-    speakFairy("Classic Mode is traditional Tic-Tac-Toe. Connect 3 of your marks in a line to win!");
-  } else if (q.includes("next level") || q.includes("point")) {
-    speakFairy("In Next Level Mode, empty box gives 1 point, double mark gives 1.5 points, and shared box gives half point!");
-  } else if (q.includes("who created") || q.includes("maker") || q.includes("shawon")) {
-    speakFairy("This awesome game was created by Aftab Shahriar Shawon!");
-  } else if (q.includes("win") || q.includes("how to win")) {
-    speakFairy("To win in Next Level mode, you need 3 marks in a row with at least 3.0 total points!");
+function getSmartAIResponse(q) {
+  if (q.includes("joke") || q.includes("funny") || q.includes("হাসি") || q.includes("জোকস")) {
+    const jokes = [
+      "বল্টু: স্যার, পরীক্ষায় শূন্য পাইছি কেন? শিক্ষক: তুমি খাতা খালি জমা দিছিলা! বল্টু: ফাঁকা খাতায় শূন্য দেওয়া তো অন্যায়! 😂",
+      "মশাকে কখনো ঘুমাতে দেখেছেন? কারণ মশা সারারাত ডিজে বাজায়! 🤣",
+      "কম্পিউটার কেন ডাক্তার দেখায়? কারণ তার পেটে প্রচুর 'ভাইরাস' ঢুকছে! 🤖"
+    ];
+    return jokes[Math.floor(Math.random() * jokes.length)];
+  } else if (q.includes("classic") || q.includes("ক্লাসিক")) {
+    return "ক্লাসিক মোডে পরপর ৩টি ঘর মেলালেই আপনি জিতে যাবেন!";
+  } else if (q.includes("next level") || q.includes("পয়েন্ট") || q.includes("নিয়ম")) {
+    return "নেক্সট লেভেলে ফাঁকা ঘর=১ পয়েন্ট, ডাবল=১.৫, আর শেয়ার্ড=০.৫ পয়েন্ট! ৩ ঘর মিলিয়ে মোট ৩.০ পয়েন্ট লাগবে!";
+  } else if (q.includes("কে বানাইছে") || q.includes("বানিয়েছে") || q.includes("shawon") || q.includes("aftab")) {
+    return "এই দারুণ গেমটি বানিয়েছেন প্রতিভাবান আফতাব শাহরিয়ার শাওন! 👑";
+  } else if (q.includes("কেমন আছো") || q.includes("কেমন আছেন")) {
+    return "আমি একদম বিন্দাস আছি! আপনার গেম কেমন চলছে বলুন্? ✨";
   } else {
-    speakFairy("I am your game guide! You can ask me how to win or about Classic and Next Level rules.");
+    return `"${q}" সম্পর্কে দারুণ প্রশ্ন! খেলা চালিয়ে যান আর ৩.০ পয়েন্ট টার্গেট করুন! 🚀`;
   }
 }
 
@@ -355,8 +456,8 @@ const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 setTimeout(() => {
   document.getElementById('splashScreen').style.display = 'none';
   document.getElementById('mainGamePage').style.display = 'block';
+  changeLanguage('bn');
   updateFairyPosition();
-  startFlightRoutine();
   newGame();
 }, 3500);
 
@@ -369,10 +470,11 @@ function setVersion(ver) {
 
 function setOpponent(mode) {
   opponentMode = mode;
+  const t = translations[currentLang];
   document.getElementById('modeBot').classList.toggle('active', mode==='bot');
   document.getElementById('modeFriend').classList.toggle('active', mode==='friend');
-  document.getElementById('p1Name').textContent = mode==='bot' ? 'You' : 'Player X';
-  document.getElementById('p2Name').textContent = mode==='bot' ? 'Computer' : 'Player O';
+  document.getElementById('p1Name').textContent = mode==='bot' ? t.you : 'Player X';
+  document.getElementById('p2Name').textContent = mode==='bot' ? t.cpu : 'Player O';
   newGame();
 }
 
@@ -382,7 +484,6 @@ function newGame() {
   board = Array(9).fill(''); uses = Array(9).fill(0);
   pts = { X: Array(9).fill(0), O: Array(9).fill(0) };
   turn = 'X'; gameOver = false;
-  document.getElementById('line').innerHTML = '';
   render();
   if(opponentMode === 'bot' && turn === computer) setTimeout(computerMove, 400);
 }
@@ -426,12 +527,13 @@ function makeMove(i) {
 }
 
 function checkWin(p) {
+  const t = translations[currentLang];
   for(const l of lines) {
     if(l.every(idx => board[idx] === p || board[idx] === 'XO')) {
       const tot = pts[p][l[0]] + pts[p][l[1]] + pts[p][l[2]];
       if(gameVersion === 'classic' || tot >= 3) {
         gameOver = true;
-        document.getElementById('status').textContent = p === human ? 'You Won! 🏆' : 'Computer Won! 🤖';
+        document.getElementById('status').textContent = p === human ? t.win : t.lose;
         render(); return true;
       }
     }
