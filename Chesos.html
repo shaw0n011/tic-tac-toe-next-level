@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Chess Trap & Gambit Master Tutor</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2e;--panel2:#18233c;--text:#eef3ff;--muted:#aab6d0;--accent:#65d6ff;--light:#f0f0f0;--dark:#555}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#080c18,#111b32);color:var(--text);font-family:system-ui,Arial,sans-serif}
+header{padding:16px;text-align:center;background:#0d1528;border-bottom:1px solid #263451}h1{margin:0;font-size:24px}header p{margin:5px;color:var(--muted);font-size:13px}
+.app{max-width:1200px;margin:auto;padding:14px;display:grid;grid-template-columns:minmax(300px,560px) 1fr;gap:14px}
+.card{background:rgba(18,26,46,.96);border:1px solid #293754;border-radius:16px;padding:14px;box-shadow:0 12px 35px #0005}
+#board{width:min(92vw,520px);aspect-ratio:1/1;margin:auto;display:grid;grid-template-columns:repeat(8,1fr);border:5px solid #202a40;border-radius:8px;overflow:hidden;box-shadow:0 12px 28px #0008}
+.sq{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:1/1;font-size:clamp(28px,7vw,55px);font-family:"Segoe UI Symbol","Noto Sans Symbols 2",serif;cursor:pointer;user-select:none}
+.sq.light{background:#f0f0f0;color:#111}.sq.dark{background:#555;color:#111}.sq.sel{outline:4px solid #37d67a;outline-offset:-4px}.sq.last{box-shadow:inset 0 0 0 5px #ffd84a}
+.coord{position:absolute;font:10px Arial;color:#222;bottom:2px;right:3px;opacity:.7}.dark .coord{color:#fff}
+.controls{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}button,select,input{background:#202d49;color:#fff;border:1px solid #3a4a6c;border-radius:9px;padding:9px 11px}button{cursor:pointer}button:hover{background:#2b3c60}
+#title{font-weight:700;font-size:18px}.muted{color:var(--muted);font-size:13px}.movebox{margin-top:10px;background:#0d1528;border-radius:10px;padding:10px;min-height:48px}
+#list{max-height:360px;overflow:auto;margin-top:8px}.varBtn:hover{background:#2b3c60!important}.item{padding:9px;border-bottom:1px solid #25314a;cursor:pointer}.item:hover,.item.active{background:#203150}.search{width:100%;margin:8px 0}
+.chat{height:250px;overflow:auto;background:#0b1222;border-radius:10px;padding:10px;margin-top:10px}.msg{margin:7px 0;padding:8px 10px;border-radius:10px;max-width:90%}.ai{background:#1e3150}.you{background:#274b3a;margin-left:auto}.chatrow{display:flex;gap:6px;margin-top:8px}.chatrow input{flex:1}.badge{display:inline-block;padding:4px 7px;border-radius:20px;background:#193c52;color:#75dcff;font-size:11px}
+@media(max-width:800px){.app{grid-template-columns:1fr}.card{padding:10px}}
+</style>
+</head>
+<body>
+<header><h1>♟ Chess Trap & Gambit Master Tutor</h1><p>Interactive Traps • Full Checkmates • Variations • Voice Assisted</p></header>
+<div class="app">
+<section class="card">
+  <div id="board"></div>
+  <div class="controls">
+    <button id="prev">◀ Previous</button><button id="play">▶ Auto Play</button><button id="next">Next ▶</button>
+    <button id="reset">↺ Reset</button><button id="voice">🔊 Voice: ON</button>
+  </div>
+  <div class="movebox"><div id="moveLabel">Choose a lesson</div><div id="current" class="muted">Move 0</div></div>
+</section>
+<section class="card">
+  <div id="title">Opening & Trap Library</div>
+  <div class="muted"><span class="badge" id="count"></span> lessons loaded</div>
+  <input class="search" id="search" placeholder="Search: Italian, Traxler, Gambit, Fried Liver, Légal...">
+  <div id="list"></div>
+  <div class="movebox"><b>Variations</b><div id="vars" class="muted">Select a lesson to see its variations.</div></div>
+  <div class="chat" id="chat"><div class="msg ai">Hi! Select a lesson. You can touch pieces on the board to move them or use Auto Play to learn checkmate lines!</div></div>
+  <div class="chatrow"><input id="q" placeholder="Ask about this lesson..."><button id="ask">Ask</button></div>
+</section>
+</div>
+
+<script>
+const DATA = [
+  {
+    "name": "Légal's Mate (Légal Trap)",
+    "line": "e4 e5 Nf3 d6 Bc4 Bg4 Nc3 g6 Nxe5 Bxd1 Bxf7+ Ke7 Nd5#",
+    "variations": [
+      "e4 e5 Nf3 d6 Bc4 Bg4 Nc3 g6 Nxe5 Bxd1 Bxf7+ Ke7 Nd5#",
+      "e4 e5 Nf3 d6 Bc4 Nc6 Nc3 Bg4 h3 Bh5 Nxe5 Bxd1 Bxf7+ Ke7 Nd5#",
+      "e4 e5 Nf3 d6 Bc4 Bg4 Nc3 h6 Nxe5 Bxd1 Bxf7+ Ke7 Nd5#"
+    ]
+  },
+  {
+    "name": "Italian Game — Traxler Counterattack",
+    "line": "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 Bc5 Nxf7 Bxf2+ Kxf2 Nxe4+ Ke3 Qh4 Qf3 Nf6 Nxh8 Nd4 Qf1 d5 Bb3 Ng4+ Kd3 Nf2+ Kc3 Ne2+ Qxe2 Qd4#",
+    "variations": [
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 Bc5 Nxf7 Bxf2+ Kxf2 Nxe4+ Ke3 Qh4 Qf3 Nf6 Nxh8 Nd4 Qf1 d5 Bb3 Ng4+ Kd3 Nf2+ Kc3 Ne2+ Qxe2 Qd4#",
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 Bc5 Bxf7+ Ke7 Bd5 Rf8 O-O d6 c3 Bg4",
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 Bc5 Nxf7 Bxf2+ Kf1 Qe7 Nxh8 d5 exd5 Nd4 c3 Bg4 Qa4+ Nd7"
+    ]
+  },
+  {
+    "name": "Italian — Blackburne Shilling Trap",
+    "line": "e4 e5 Nf3 Nc6 Bc4 Nd4 Nxe5 Qg5 Nxf7 Qxg2 Rf1 Qxe4+ Be2 Nf3#",
+    "variations": [
+      "e4 e5 Nf3 Nc6 Bc4 Nd4 Nxe5 Qg5 Nxf7 Qxg2 Rf1 Qxe4+ Be2 Nf3#",
+      "e4 e5 Nf3 Nc6 Bc4 Nd4 Nxe5 Qg5 Bxf7+ Ke7 O-O Qxe5 Bxg8 Rxg8 c3 Ne6",
+      "e4 e5 Nf3 Nc6 Bc4 Nd4 Nxd4 exd4 O-O d6 d3 Nf6"
+    ]
+  },
+  {
+    "name": "Englund Gambit — Queen Trap Checkmate",
+    "line": "d4 e5 dxe5 Nc6 Nf3 Qe7 Bf4 Qb4+ Bd2 Qxb2 Bc3 Bb4 Qd2 Bxc3 Qxc3 Qc1#",
+    "variations": [
+      "d4 e5 dxe5 Nc6 Nf3 Qe7 Bf4 Qb4+ Bd2 Qxb2 Bc3 Bb4 Qd2 Bxc3 Qxc3 Qc1#",
+      "d4 e5 dxe5 Nc6 Nf3 Qe7 Bf4 Qb4+ Bd2 Qxb2 Nc3 Bb4 Rb1 Qa3"
+    ]
+  },
+  {
+    "name": "Italian Game — Fried Liver Attack",
+    "line": "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Nxd5 Nxf7 Kxf7 Qf3+ Ke6 Nc3 Ne7 d4 c6 Bg5 h6 Bxe7 Bxe7 O-O-O",
+    "variations": [
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Nxd5 Nxf7 Kxf7 Qf3+ Ke6 Nc3 Ne7 d4 c6 Bg5 h6 Bxe7 Bxe7 O-O-O",
+      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Na5 Bb5+ c6 dxc6 bxc6 Be2 h6 Nf3 e4 Ne5"
+    ]
+  },
+  {
+    "name": "Petrov — Stafford Gambit",
+    "line": "e4 e5 Nf3 Nf6 Nxe5 Nc6 Nxc6 dxc6 d3 Bc5 Bg5 Nxe4 Bxd8 Bxf2+ Ke2 Bg4#",
+    "variations": [
+      "e4 e5 Nf3 Nf6 Nxe5 Nc6 Nxc6 dxc6 d3 Bc5 Bg5 Nxe4 Bxd8 Bxf2+ Ke2 Bg4#",
+      "e4 e5 Nf3 Nf6 Nxe5 Nc6 Nxc6 dxc6 e5 Ne4 d3 Bc5 dxe4 Bxf2+ Ke2 Bg4+"
+    ]
+  },
+  {
+    "name": "Elephant Gambit — Winaver Trap",
+    "line": "e4 e5 Nf3 d5 exd5 e4 Qe2 Nf6 Nc3 Be7 Nxe4 O-O Nxf6+ Bxf6 d4 Re8 Be3 Qxd5",
+    "variations": [
+      "e4 e5 Nf3 d5 exd5 e4 Qe2 Nf6 Nc3 Be7 Nxe4 O-O Nxf6+ Bxf6 d4 Re8 Be3 Qxd5",
+      "e4 e5 Nf3 d5 exd5 e4 Ne5 Qxd5 d4 exd3 Nxd3 Nf6"
+    ]
+  },
+  {
+    "name": "Sicilian — Smith-Morra Gambit",
+    "line": "e4 c5 d4 cxd4 c3 dxc3 Nxc3 Nc6 Nf3 d6 Bc4 e6 O-O Nf6 Qe2 Be7 Rd1 e5 h3 O-O",
+    "variations": [
+      "e4 c5 d4 cxd4 c3 dxc3 Nxc3 Nc6 Nf3 d6 Bc4 e6 O-O Nf6 Qe2 Be7 Rd1 e5 h3 O-O",
+      "e4 c5 d4 cxd4 c3 d3 Bxd3 Nc6 c4 g6 Nf3 Bg7 O-O d6"
+    ]
+  },
+  {
+    "name": "Danish Gambit — Dual Bishop Sacrifice",
+    "line": "e4 e5 d4 exd4 c3 dxc3 Bc4 cxb2 Bxb2 d5 Bxd5 Nf6 Bxf7+ Kxf7 Qxd8 Bb4+ Qd2 Bxd2+ Nxd2",
+    "variations": [
+      "e4 e5 d4 exd4 c3 dxc3 Bc4 cxb2 Bxb2 d5 Bxd5 Nf6 Bxf7+ Kxf7 Qxd8 Bb4+ Qd2 Bxd2+ Nxd2",
+      "e4 e5 d4 exd4 c3 dxc3 Bc4 cxb2 Bxb2 Nc6 Nf3 d6 O-O Be6 Bxe6 fxe6"
+    ]
+  },
+  {
+    "name": "King's Gambit Accepted",
+    "line": "e4 e5 f4 exf4 Nf3 g5 Bc4 g4 O-O gxf3 Qxf3 Qf6 e5 Qxe5 d3 Bh6 Nc3 Ne7 Bd2",
+    "variations": [
+      "e4 e5 f4 exf4 Nf3 g5 Bc4 g4 O-O gxf3 Qxf3 Qf6 e5 Qxe5 d3 Bh6 Nc3 Ne7 Bd2",
+      "e4 e5 f4 exf4 Nf3 g5 h4 g4 Ne5 Nf6 d4 d6 Nd3 Nxe4 Bxf4 Qe7"
+    ]
+  }
+];
+
+let board=[], lesson=null, tokens=[], idx=0, isPlaying=false, selected=null, last=[];
+const PIECES={K:"♔",Q:"♕",R:"♖",B:"♗",N:"♘",P:"♙",k:"♚",q:"♛",r:"♜",b:"♝",n:"♞",p:"♟"};
+const files="abcdefgh";
+
+function start(){
+  board=[
+    ["r","n","b","q","k","b","n","r"],
+    ["p","p","p","p","p","p","p","p"],
+    ["","","","","","","",""],
+    ["","","","","","","",""],
+    ["","","","","","","",""],
+    ["","","","","","","",""],
+    ["P","P","P","P","P","P","P","P"],
+    ["R","N","B","Q","K","B","N","R"]
+  ];
+}
+
+function draw(){
+  const el=document.getElementById("board");
+  el.innerHTML="";
+  for(let r=0;r<8;r++){
+    for(let c=0;c<8;c++){
+      let d=document.createElement("div");
+      d.className="sq "+((r+c)%2?"dark":"light");
+      if(selected&&selected[0]==r&&selected[1]==c)d.classList.add("sel");
+      if(last.some(x=>x[0]==r&&x[1]==c))d.classList.add("last");
+      d.innerHTML=(board[r][c]?PIECES[board[r][c]]:"")+`<span class="coord">${files[c]}${8-r}</span>`;
+      d.onclick=()=>handleSquareClick(r,c);
+      el.appendChild(d);
+    }
+  }
+}
+
+function handleSquareClick(r,c){
+  if(!selected){
+    if(board[r][c]) {
+      selected=[r,c];
+      draw();
+    }
+  } else {
+    let [fr,fc]=selected;
+    if(fr===r && fc===c){
+      selected=null;
+      draw();
+      return;
+    }
+    let piece=board[fr][fc];
+    board[r][c]=piece;
+    board[fr][fc]="";
+    last=[[fr,fc],[r,c]];
+    selected=null;
+    draw();
+  }
+}
+
+function stopTimer(){
+  isPlaying = false;
+  document.getElementById("play").textContent="▶ Auto Play";
+  window.speechSynthesis.cancel();
+}
+
+function resetBoard(){
+  start();
+  idx=0;
+  last=[];
+  selected=null;
+  draw();
+  document.getElementById("current").textContent="Move 0";
+}
+
+function square(s){
+  return [8-parseInt(s[1]), files.indexOf(s[0])];
+}
+
+function moveToken(t, moveIndex){
+  let clean=t.replace(/[+#?!]/g,"");
+  let isWhite = (moveIndex % 2 === 0);
+
+  if(clean==="O-O"||clean==="0-0"){
+    let row = isWhite ? 7 : 0; 
+    let king = board[row][4], rook = board[row][7]; 
+    board[row][6] = king; board[row][4] = "";
+    board[row][5] = rook; board[row][7] = "";
+    return [[row,4],[row,6]];
+  }
+  if(clean==="O-O-O"||clean==="0-0-0"){
+    let row = isWhite ? 7 : 0; 
+    let king = board[row][4], rook = board[row][0];
+    board[row][2] = king; board[row][4] = "";
+    board[row][3] = rook; board[row][0] = "";
+    return [[row,4],[row,2]];
+  }
+
+  let dest=clean.slice(-2), to=square(dest); 
+  let letter=clean[0];
+  let type="P"; 
+  if("KQRBN".includes(letter)){
+    type=letter;
+    clean=clean.slice(1);
+  } 
+
+  let candidates=[];
+  for(let r=0;r<8;r++){
+    for(let c=0;c<8;c++){
+      let p=board[r][c];
+      if(!p) continue;
+      let pIsWhite = p === p.toUpperCase();
+      if(pIsWhite !== isWhite) continue;
+
+      let pt=p.toUpperCase();
+      let want=(type==="P"?"P":type);
+      if(pt!==want) continue;
+
+      if(board[to[0]][to[1]]){
+        let destIsWhite = board[to[0]][to[1]] === board[to[0]][to[1]].toUpperCase();
+        if(destIsWhite === isWhite) continue;
+      }
+
+      let dir=isWhite?-1:1, dr=to[0]-r, dc=to[1]-c, ok=false;
+      if(type==="P"){
+        const startRow = isWhite ? 6 : 1;
+        const oneStep = (dc===0 && dr===dir && !board[to[0]][to[1]]);
+        const twoStep = (r===startRow && dc===0 && dr===2*dir && !board[r+dir][c] && !board[to[0]][to[1]]);
+        const capture = (Math.abs(dc)===1 && dr===dir && board[to[0]][to[1]] && ((board[to[0]][to[1]]===board[to[0]][to[1]].toUpperCase())!==isWhite));
+        ok = oneStep || twoStep || capture;
+      }
+      if(type==="N") ok=(Math.abs(dr*dc)===2);
+      if(type==="K") ok=Math.max(Math.abs(dr),Math.abs(dc))===1;
+      if(type==="R") ok=(dr===0||dc===0)&&clear(r,c,to[0],to[1]);
+      if(type==="B") ok=Math.abs(dr)===Math.abs(dc)&&clear(r,c,to[0],to[1]);
+      if(type==="Q") ok=(dr===0||dc===0||Math.abs(dr)===Math.abs(dc))&&clear(r,c,to[0],to[1]);
+
+      if(ok) candidates.push([r,c]);
+    }
+  }
+
+  let from=candidates[0];
+  if(!from) return null;
+
+  let [fr,fc]=from, moving=board[fr][fc]; 
+  board[to[0]][to[1]]=moving;
+  board[fr][fc]="";
+
+  if(type==="P"&&(to[0]===0||to[0]===7)){
+    let promo=clean.includes("=")?clean.split("=")[1][0]:"Q";
+    board[to[0]][to[1]]=isWhite?promo:promo.toLowerCase();
+  }
+  return [from,to];
+}
+
+function clear(r,c,tr,tc){
+  let dr=Math.sign(tr-r), dc=Math.sign(tc-c), x=r+dr, y=c+dc;
+  while(x!==tr||y!==tc){
+    if(board[x][y]) return false;
+    x+=dr; y+=dc;
+  }
+  return true;
+}
+
+function speak(t, onEndCallback){
+  if(document.getElementById("voice").dataset.off){
+    if(onEndCallback) setTimeout(onEndCallback, 600);
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  let u=new SpeechSynthesisUtterance(spoken(t));
+  u.rate=0.9; 
+  u.pitch=1; 
+  u.lang="en-US";
+
+  u.onend = () => { if(onEndCallback) setTimeout(onEndCallback, 400); };
+  u.onerror = () => { if(onEndCallback) setTimeout(onEndCallback, 400); };
+
+  window.speechSynthesis.speak(u);
+}
+
+function spoken(t){
+  let s = t.replace(/[+#?!]/g,"");
+  if(s === "O-O" || s === "0-0") return "Castle Kingside";
+  if(s === "O-O-O" || s === "0-0-0") return "Castle Queenside";
+
+  s = s.replace(/x/g," takes ");
+  s = s.replace(/^N/,"Knight ").replace(/^B/,"Bishop ").replace(/^R/,"Rook ").replace(/^Q/,"Queen ").replace(/^K/,"King ");
+  s = s.replace(/([a-h])([1-8])/g, "$1 $2");
+  return s;
+}
+
+function renderAt(n){
+  stopTimer();
+  resetBoard();
+  for(let i=0;i<n;i++){
+    let mv=moveToken(tokens[i], i);
+    if(mv) last=mv;
+  }
+  idx=n;
+  draw();
+  let t=tokens[n-1]||"—";
+  document.getElementById("current").textContent="Move "+n+" / "+tokens.length+(n?" • "+t:"");
+}
+
+function selectLesson(i){
+  stopTimer();
+  lesson=DATA[i];
+  tokens=lesson.line.trim().split(/\s+/);
+  idx=0;
+  document.getElementById("title").textContent=lesson.name;
+  document.getElementById("moveLabel").textContent="Lesson: "+lesson.name;
+  document.getElementById("vars").innerHTML=lesson.variations.length
+    ? lesson.variations.map((v,j)=>`<button class="varBtn" data-var="${j}" style="display:block;width:100%;text-align:left;margin:7px 0;padding:9px;border-radius:9px;background:#202d49;color:#fff;border:1px solid #3a4a6c;cursor:pointer"><b>Variation ${j+1}</b><br><span class="muted">${v}</span></button>`).join("")
+    : "Main line only — no stored branch.";
+
+  document.querySelectorAll(".varBtn").forEach((b,j)=>b.onclick=()=>selectVariation(j));
+  document.querySelectorAll(".item").forEach((x,j)=>x.classList.toggle("active",j===i));
+  renderAt(0);
+  addAI("Lesson loaded. Use Auto Play or click Next to study each move.");
+}
+
+function selectVariation(vIndex){
+  if(!lesson || !lesson.variations || !lesson.variations[vIndex]) return;
+  stopTimer();
+  tokens=lesson.variations[vIndex].trim().split(/\s+/);
+  idx=0;
+  resetBoard();
+  document.getElementById("current").textContent="Variation "+(vIndex+1)+" • Move 0 / "+tokens.length;
+  addAI("Variation "+(vIndex+1)+" loaded. Press Auto Play to watch this line through its finish.");
+}
+
+function next(autoPlayTriggered = false){
+  if(!tokens.length) return;
+  if(idx < tokens.length){
+    let t=tokens[idx];
+    let mv=moveToken(t, idx);
+    if(mv) last=mv;
+    idx++;
+    draw();
+    document.getElementById("current").textContent="Move "+idx+" / "+tokens.length+" • "+t;
+
+    speak(t, () => {
+      if(isPlaying && autoPlayTriggered){
+        next(true);
+      }
+    });
+  } else {
+    const finished = tokens[tokens.length-1] || "";
+    stopTimer();
+    if(finished.includes("#")){
+      document.getElementById("moveLabel").textContent="♚ CHECKMATE — "+(lesson ? lesson.name : "Trap");
+      document.getElementById("current").textContent="Complete • Checkmate";
+    }
+  }
+}
+
+document.body.addEventListener('touchstart', unlockAudio, { once: true });
+document.body.addEventListener('click', unlockAudio, { once: true });
+
+function unlockAudio() {
+  let u = new SpeechSynthesisUtterance('');
+  window.speechSynthesis.speak(u);
+}
+
+document.getElementById("next").onclick=()=>{ stopTimer(); next(false); };
+document.getElementById("prev").onclick=()=>renderAt(Math.max(0,idx-1));
+document.getElementById("reset").onclick=()=>renderAt(0);
+
+document.getElementById("play").onclick=()=>{
+  if(isPlaying){
+    stopTimer();
+  } else {
+    isPlaying = true;
+    document.getElementById("play").textContent="⏸ Pause";
+    next(true);
+  }
+};
+
+document.getElementById("voice").onclick=()=>{
+  let b=document.getElementById("voice");
+  b.dataset.off=b.dataset.off?"":"1";
+  b.textContent=b.dataset.off?"🔇 Voice: OFF":"🔊 Voice: ON";
+};
+
+function list(q=""){
+  let box=document.getElementById("list");
+  box.innerHTML="";
+  let arr=DATA.map((x,i)=>({x,i})).filter(o=>o.x.name.toLowerCase().includes(q.toLowerCase()));
+  arr.forEach(o=>{
+    let d=document.createElement("div");
+    d.className="item";
+    d.textContent=o.x.name;
+    d.onclick=()=>selectLesson(o.i);
+    box.appendChild(d);
+  });
+  document.getElementById("count").textContent=DATA.length;
+}
+
+document.getElementById("search").oninput=e=>list(e.target.value);
+
+function addAI(t){
+  let d=document.createElement("div");
+  d.className="msg ai";
+  d.textContent=t;
+  document.getElementById("chat").appendChild(d);
+  document.getElementById("chat").scrollTop=99999;
+}
+
+document.getElementById("ask").onclick=()=>{
+  let q=document.getElementById("q");
+  if(!q.value.trim()) return;
+  let x=q.value.trim();
+  let d=document.createElement("div");
+  d.className="msg you";
+  d.textContent=x;
+  document.getElementById("chat").appendChild(d);
+  let ans="এই পাঠের পরবর্তী সেরা চাল বা চেকম্যাট ট্র্যাপের বিষয়ে জানতে ভ্যারিয়েশন সিলেক্ট করুন।";
+  if(/variation|ভ্যারিয়েশন/i.test(x)&&lesson) ans="এই পাঠের "+lesson.variations.length+"টি পৃথক ভ্যারিয়েশন আছে। Variations প্যানেল থেকে সিলেক্ট করতে পারেন।";
+  addAI(ans);
+  q.value="";
+};
+
+start();
+draw();
+list();
+</script>
+</body>
+    </html>
