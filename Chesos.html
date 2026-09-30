@@ -13,7 +13,7 @@
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>Chess Master Tutor & Deep Blue vs Kasparov Analysis</title>
+<title>Chess Master Tutor — Max Lange Attack & Analysis</title>
 <style>
 :root{--bg:#0b1020;--panel:#121a2e;--panel2:#18233c;--text:#eef3ff;--muted:#aab6d0;--accent:#65d6ff;--light:#f0f0f0;--dark:#555;--gold:#ffd700}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#080c18,#111b32);color:var(--text);font-family:system-ui,Arial,sans-serif}
@@ -26,119 +26,111 @@ header{padding:16px;text-align:center;background:#0d1528;border-bottom:1px solid
 .coord{position:absolute;font:10px Arial;color:#222;bottom:2px;right:3px;opacity:.7}.dark .coord{color:#fff}
 .controls{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}button,select,input{background:#202d49;color:#fff;border:1px solid #3a4a6c;border-radius:9px;padding:9px 11px}button{cursor:pointer}button:hover{background:#2b3c60}
 #title{font-weight:700;font-size:18px}.muted{color:var(--muted);font-size:13px}.movebox{margin-top:10px;background:#0d1528;border-radius:10px;padding:10px;min-height:48px}
-#list{max-height:220px;overflow:auto;margin-top:8px}.varBtn:hover{background:#2b3c60!important}.item{padding:9px;border-bottom:1px solid #25314a;cursor:pointer}.item:hover,.item.active{background:#203150}.search{width:100%;margin:8px 0}
-.chat{height:180px;overflow:auto;background:#0b1222;border-radius:10px;padding:10px;margin-top:10px}.msg{margin:7px 0;padding:8px 10px;border-radius:10px;max-width:90%}.ai{background:#1e3150}.you{background:#274b3a;margin-left:auto}.chatrow{display:flex;gap:6px;margin-top:8px}.chatrow input{flex:1}.badge{display:inline-block;padding:4px 7px;border-radius:20px;background:#193c52;color:#75dcff;font-size:11px}
-.analysis-box{background:#0d182e;border:1px solid var(--accent);border-radius:12px;padding:12px;margin-top:12px;max-height:240px;overflow-y:auto;line-height:1.6;font-size:13px;color:#d8e5ff}
+#list{max-height:200px;overflow:auto;margin-top:8px}.varBtn:hover{background:#2b3c60!important}.item{padding:9px;border-bottom:1px solid #25314a;cursor:pointer}.item:hover,.item.active{background:#203150}.search{width:100%;margin:8px 0}
+.chat{height:160px;overflow:auto;background:#0b1222;border-radius:10px;padding:10px;margin-top:10px}.msg{margin:7px 0;padding:8px 10px;border-radius:10px;max-width:90%}.ai{background:#1e3150}.you{background:#274b3a;margin-left:auto}.chatrow{display:flex;gap:6px;margin-top:8px}.chatrow input{flex:1}.badge{display:inline-block;padding:4px 7px;border-radius:20px;background:#193c52;color:#75dcff;font-size:11px}
+.analysis-box{background:#0d182e;border:1px solid var(--accent);border-radius:12px;padding:12px;margin-top:12px;max-height:260px;overflow-y:auto;line-height:1.6;font-size:13px;color:#d8e5ff}
 .analysis-box h4{margin:0 0 6px 0;color:var(--gold);font-size:15px}
-.mode-bar{display:flex;gap:8px;margin-bottom:12px;justify-content:center}
-.mode-btn{flex:1;font-size:12px;padding:8px;background:#182642;border:1px solid #334870}
+.mode-bar{display:flex;gap:6px;margin-bottom:12px;justify-content:center;flex-wrap:wrap}
+.mode-btn{flex:1;min-width:100px;font-size:11px;padding:8px;background:#182642;border:1px solid #334870}
 .mode-btn.active{background:#2a4f85;border-color:var(--accent)}
 @media(max-width:800px){.app{grid-template-columns:1fr}.card{padding:10px}}
 </style>
 </head>
 <body>
 <header>
-  <h1>♟ Chess Master Tutor & AI Game</h1>
-  <p>Play vs AI • Play vs Friend • Kasparov vs Deep Blue Analysis • Voice Assistant</p>
+  <h1>♟ Chess Master Tutor & Max Lange Attack</h1>
+  <p>বাংলা ভয়েস ব্যাখ্যা সহ সম্পূর্ণ ম্যাক্স লাঞ্জ অ্যাটাক ও দাবা টিউটোরিয়াল</p>
 </header>
 <div class="app">
 <section class="card">
   <div class="mode-bar">
-    <button class="mode-btn active" id="modeTutor">📚 Tutor & Traps</button>
+    <button class="mode-btn active" id="modeMaxLange">⚔️ Max Lange Attack (Part 1&2)</button>
     <button class="mode-btn" id="modeKasparov">🏆 Kasparov vs Deep Blue</button>
+    <button class="mode-btn" id="modeTutor">📚 Trap Library</button>
     <button class="mode-btn" id="modePlayAI">🤖 vs AI</button>
-    <button class="mode-btn" id="modePlayFriend">👥 vs Friend</button>
   </div>
   <div id="board"></div>
   <div class="controls">
-    <button id="prev">◀ Previous</button><button id="play">▶ Auto Play</button><button id="next">Next ▶</button>
-    <button id="reset">↺ Reset</button><button id="voice">🔊 Voice: ON</button>
-  </div>
-  <div class="controls" id="aiControls" style="display:none;">
-    <label style="font-size:12px;">AI Level: </label>
-    <select id="aiDiff"><option value="easy">Easy</option><option value="med" selected>Medium</option><option value="hard">Hard</option></select>
+    <button id="prev">◀ পূর্বে</button><button id="play">▶ অটো প্লে</button><button id="next">পরবর্তী ▶</button>
+    <button id="reset">↺ রিসেট</button><button id="voice">🔊 বাংলা ভয়েস: ON</button>
   </div>
   <div class="movebox">
-    <div id="moveLabel">Choose a Mode or Lesson</div>
-    <div id="current" class="muted">Move 0</div>
+    <div id="moveLabel">Max Lange Attack — Part 1 & 2</div>
+    <div id="current" class="muted">চাল ০</div>
   </div>
-  <div id="analysisSection" class="analysis-box" style="display:none;">
-    <h4 id="analysisTitle">চাল ১: e4 (Deep Blue)</h4>
-    <div id="analysisText">গেম মোড বা লেসন পরিবর্তন করুন...</div>
+  <div id="analysisSection" class="analysis-box">
+    <h4 id="analysisTitle">ম্যাক্স লাঞ্জ অ্যাটাক স্বাগতম!</h4>
+    <div id="analysisText">পরবর্তী বাটনে ক্লিক করুন বা অটো প্লে চালান। প্রতিটি চালের বাংলা ব্যাখ্যা ও মুখে উচ্চারণ শোনানো হবে।</div>
   </div>
 </section>
 
 <section class="card">
-  <div id="title">Opening & Trap Library</div>
-  <div class="muted"><span class="badge" id="count"></span> lessons loaded</div>
-  <input class="search" id="search" placeholder="Search: Italian, Traxler, Gambit, Fried Liver, Légal...">
+  <div id="title">Max Lange Attack & Trap Library</div>
+  <div class="muted"><span class="badge" id="count"></span> টি ট্র্যাপ লোড হয়েছে</div>
+  <input class="search" id="search" placeholder="খুঁজুন: Italian, Max Lange, Traxler, Gambit...">
   <div id="list"></div>
-  <div class="movebox"><b>Variations</b><div id="vars" class="muted">Select a lesson to see its variations.</div></div>
-  <div class="chat" id="chat"><div class="msg ai">Hi! Select a lesson or game mode to start playing and learning!</div></div>
-  <div class="chatrow"><input id="q" placeholder="Ask about this lesson or match..."><button id="ask">Ask</button></div>
+  <div class="movebox"><b>ভ্যারিয়েশনসমূহ</b><div id="vars" class="muted">কোনো পাঠ সিলেক্ট করলে তার ভ্যারিয়েশন দেখাবে।</div></div>
+  <div class="chat" id="chat"><div class="msg ai">স্বাগতম! ম্যাক্স লাঞ্জ অ্যাটাকের সব চাল বাংলা ব্যাখ্যা ও ভয়েস সহ শিখতে পরবর্তী বাটনে চাপুন।</div></div>
+  <div class="chatrow"><input id="q" placeholder="প্রশ্ন লিখুন..."><button id="ask">জিজ্ঞাসা করুন</button></div>
 </section>
 </div>
 
 <script>
+const MAX_LANGE_GAME = [
+  { move: "e4", title: "চাল ১: e4 (সেন্টার পন push)", exp: "হোয়াইট প্রথম চালেই e4 খেলে সেন্টারের নিয়ন্ত্রণ নেয়। এটি কিং'স পন ওপেনিং। বিশপ ও কুইনের পথ দ্রুত খুলে যায়।" },
+  { move: "e5", title: "চাল ১... e5 (ব্ল্যাকের রেসপন্স)", exp: "ব্ল্যাক পাল্টা e5 খেলে কেন্দ্র সমানভাবে দখল করার চেষ্টা করে।" },
+  { move: "Nf3", title: "চাল ২: Nf3 (নাইট ডেভেলপমেন্ট)", exp: "হোয়াইট নাইট c3 স্কয়ারে বের করে e5 পনকে আক্রমণ করে। এটি খুব পাওয়ারফুল একটি মুভ।" },
+  { move: "Nc6", title: "চাল ২... Nc6 (পন ডিফেন্স)", exp: "ব্ল্যাক নাইট বের করে e5 পনকে সুরক্ষা দেয়।" },
+  { move: "Bc4", title: "চাল ৩: Bc4 (ইতালিয়ান গেম বিচ্যুতি)", exp: "হোয়াইট বিশপ c4-এ আনে। এখান থেকে f7 স্কয়ারে সরাসরি নজর রাখা যায়।" },
+  { move: "Nf6", title: "চাল ৩... Nf6 (টু নাইট্‌স ডিফেন্স)", exp: "ব্ল্যাক তার দ্বিতীয় নাইট বের করে e4 পনকে অ্যাটাক করে।" },
+  { move: "d4", title: "চাল ৪: d4 (ম্যাক্স লাঞ্জ ব্রেক!)", exp: "হোয়াইট এগ্রেসিভভাবে d4 খেলে কেন্দ্র ভেঙে দেয়। এখান থেকেই ম্যাক্স লাঞ্জ অ্যাটাকের মূল খেলা শুরু!" },
+  { move: "exd4", title: "চাল ৪... exd4 (পন ক্যাপচার)", exp: "ব্ল্যাক e4 এর বদলে d4 পনটি খেয়ে নেয়।" },
+  { move: "O-O", title: "চাল ৫: O-O (ক্যাসলিং)", exp: "হোয়াইট রাজা নিরাপদ করে এবং রুককে ওপেন ফাইলে নিয়ে আসে।" },
+  { move: "Bc5", title: "চাল ৫... Bc5 (ব্ল্যাকের পিস এক্টিভেশন)", exp: "ব্ল্যাক তার বিশপ c5-এ এনে d4 পনকে ধরে রাখার চেষ্টা করে।" },
+  { move: "e5", title: "চাল ৬: e5 (পন পুশ অ্যাটাক)", exp: "হোয়াইট e5 পন বাড়িয়ে ব্ল্যাকের f6 নাইটকে আক্রমণ করে।" },
+  { move: "d5", title: "চাল ৬... d5 (কাউন্টার স্ট্রাইক)", exp: "ব্ল্যাক তার d-পন বাড়িয়ে হোয়াইটের c4 বিশপকে পাল্টা আক্রমণ করে।" },
+  { move: "exf6", title: "চাল ৭: exf6 (পন এক্সচেঞ্জ)", exp: "হোয়াইট f6 নাইটকে খেয়ে নেয়।" },
+  { move: "dxc4", title: "চাল ৭... dxc4 (বিশপ ক্যাপচার)", exp: "ব্ল্যাক হোয়াইটের c4 বিশপকে খেয়ে নেয়।" },
+  { move: "Re1+", title: "চাল ৮: Re1+ (রুক চেক!)", exp: "হোয়াইট ই-ফাইলে রুক নিয়ে এসে সরাসরি রাজাকে চেক দেয়। অত্যন্ত মারাত্মক অ্যাটাক!" },
+  { move: "Be6", title: "চাল ৮... Be6 (ব্লক)", exp: "ব্ল্যাক বিশপ ই৬ স্কয়ারে বসিয়ে চেক ব্লক করে।" },
+  { move: "Ng5", title: "চাল ৯: Ng5 (পার্ট ২: নাইট পিন অ্যাটাক)", exp: "ভিডিওর পার্ট ২ শুরু! হোয়াইট নাইট g5-এ এনে পিন হয়ে থাকা e6 বিশপের ওপর ভারী আক্রমণ তৈরি করে।" },
+  { move: "Qd5", title: "চাল ৯... Qd5 (কুইন ডিফেন্স)", exp: "ব্ল্যাক কুইন এনে e6 বিশপকে ডিফেন্ড করার চেষ্টা করে।" },
+  { move: "Nc3", title: "চাল ১০: Nc3 (মাস্টার ট্রিক!)", exp: "হোয়াইট নাইট c3-তে স্যাক্রিফাইস করার মতো ফ্রিতে দেয়! ব্ল্যাক এটি খেতে পারবে না কারণ রুক দিয়ে কুইন পিন হয়ে আছে।" },
+  { move: "Qf5", title: "চাল ১০... Qf5 (কুইন সরান)", exp: "ব্ল্যাক বিপদ বুঝতে পেরে কুইন f5-এ নিয়ে যায়।" },
+  { move: "Nce4", title: "চাল ১১: Nce4 (বিশাল প্রেশার)", exp: "হোয়াইট নাইট e4-এ এনে c5 বিশপকে এটাক করে এবং পজিশন পুরোপুরি বিজয়ের দিকে নিয়ে যায়!" }
+];
+
 const KASPAROV_GAME = [
-  { move: "e4", title: "Move 1: e4 (Deep Blue)", exp: "১. সুপারকম্পিউটার ডিপ ব্লু বোর্ডের কেন্দ্র দখল করার জন্য কিং'স পন ২ স্কয়ার সামনে বাড়ায়।\n২. এর মাধ্যমে কুইন এবং লাইট-স্কয়ার বিশপের পথ অবিলম্বে খুলে যায়।\n৩. গ্যারি কাসপারোভের মতো অ্যাগ্রেসিভ প্লেয়ারকে আক্রমণাত্মক ওপেনিংয়ে নিয়ে যাওয়ার পরিকল্পনা।\n৪. পজিশনাল কন্ট্রোল বৃদ্ধি করা এবং সেন্টার D5 ও F5 স্কয়ারের ওপর নিয়ন্ত্রণ রাখা।\n৫. কম্পিউটার গণনা অনুযায়ী এটি প্রথম চালের জন্য সর্বোচ্চ স্কোরের একটি লাইন।\n৬. কাসপারোভের সিগনেচার সিগিলিয়ান ডিফেন্স বা কিংস পন রেসপন্স পরীক্ষা করা।\n৭. কম্পিউটারের ওপেনিং বুক থেকে এই চালের হাজার হাজার সম্ভাব্য ভ্যারিয়েশন লোড হয়।\n৮. বোর্ডের মাঝখানে স্পেস তৈরি করে প্রথম দিক থেকেই চালের স্বাধীনতা নিশ্চিত করা।\n৯. কাসপারোভের জন্য সেন্ট্রাল কাউন্টার প্লে তৈরি করার চ্যালেঞ্জ ছুড়ে দেওয়া।\n১০. ইতিহাসে প্রথমবার মানব বিশ্বচ্যাম্পিয়নের বিরুদ্ধে কম্পিউটারের ঐতিহাসিক শুরুর চাল।" },
-  { move: "c5", title: "Move 1... c5 (Kasparov)", exp: "১. কাসপারোভ তার পছন্দের সিগিলিয়ান ডিফেন্স (Sicilian Defense) নির্বাচন করেন।\n২. এটি হোয়াইটের e4 সেন্ট্রাল পনের বিরুদ্ধে সবচেয়ে বেশি জেতার সুযোগ থাকা কাউন্টার-আক্রমণ।\n৩. সোজা কেন্দ্র দখলের বদলে সাইড থেকে D4 স্কয়ারকে নিয়ন্ত্রণ করার চেষ্টা করা হয়।\n৪. এর ফলে গেমটি অ্যাসিমেট্রিক্যাল বা অসমমাত্রিক পজিশনে রূপান্তরিত হয়।\n৫. কাসপারোভ কম্পিউটারকে জানা ওপেনিং থিওরির বাইরে জটিল ট্যাকটিক্সে ফেলার চেষ্টা করেন।\n৬. সি-ফাইল ওপেন করে ভবিষ্যতে কুইনসাইড আক্রমণের পথ সুগম করা হয়।\n৭. ডিপ ব্লুর গাণিতিক গণনার চেয়ে মানুষের গভীর কৌশলী বুদ্ধিকে কাজে লাগানোর চেষ্টা।\n৮. হোয়াইটকে সহজে বোর্ডে প্রভাব বিস্তার করতে না দিয়ে ভারসাম্য বজায় রাখা।\n৯. আধুনিক দাবার অন্যতম জনপ্রিয় এবং শার্প ডিফেন্স স্ট্র্যাটেজি।\n১০. ম্যাচের শুরুতেই কাসপারোভের আক্রমণাত্মক মনোভাবের বড় প্রমাণ।" },
-  { move: "c3", title: "Move 2: c3 (Deep Blue)", exp: "১. ডিপ ব্লু আলপিন ভ্যারিয়েশন (Alapin Variation) প্রয়োগ করার সিদ্ধান্ত নেয়।\n২. এর মূল লক্ষ্য পরবর্তী চালে d4 খেলে কেন্দ্রে শক্তিশালী ২টি পন বসানো।\n৩. ব্ল্যাকের c5 পন যদি d4 টেক করে, হোয়াইট c3 পন দিয়ে পুনরায় টেক করে কেন্দ্র মজবুত রাখবে।\n৪. কাসপারোভকে তার মুখস্থ সিগিলিয়ান মেইন লাইনের ট্যাকটিক্স থেকে বের করে আনার চমৎকার কৌশল।\n৫. কম্পিউটার পজিশনাল পন স্ট্রাকচার সহজ ও মজবুত রাখার সিদ্ধান্ত নেয়।\n৬. নাইট স্বাভাবিক c3 স্কয়ারে যেতে না পারলেও পরবর্তী চালগুলোতে নাইট D2 হয়ে বের হতে পারবে।\n৭. সেন্টারে দ্রুত সুবিধা নিয়ে ব্ল্যাকের ওপর চাপ তৈরি করা।\n৮. কম্পিউটার কাসপারোভের প্রস্তুতকৃত ডিপ থিওরি এড়াতে সংকেত দেয়।\n৯. ব্ল্যাককে এখনই d5 অথবা Nf6 দিয়ে কেন্দ্রে প্রতিক্রিয়া জানাতে বাধ্য করা।\n১০. হোয়াইটের জন্য একটি শক্তপোক্ত ও সুসংগঠিত ডিফেন্সিভ-আক্রমণাত্মক ভিত্তি।" },
-  { move: "d5", title: "Move 2... d5 (Kasparov)", exp: "১. কাসপারোভ তাৎক্ষণিকভাবে সেন্টারে আঘাত হেনে পাল্টা আক্রমণ শুরু করেন।\n২. হোয়াইটের c3 চালের বিরুদ্ধে এটি সবচেয়ে নীতিগত এবং শক্তিশালী স্ট্রাইক।\n৩. সরাসরি e4 পন টিকে চ্যালেঞ্জ করা হয়, যাতে হোয়াইট সেন্টারে একা রাজত্ব করতে না পারে।\n৪. যদি হোয়াইট exd5 টেক করে, তবে কাসপারোভ Qxd5 খেলে কুইন সেন্টারে নিয়ে আসবেন।\n৫. ব্ল্যাকের ডার্ক-স্কয়ার বিশপ এবং কুইনের মুভমেন্টের পথ পরিষ্কার হয়।\n৬. ডিপ ব্লুকে দ্রুত সিদ্ধান্ত নিতে বাধ্য করা যে সে পন এক্সচেঞ্জ করবে নাকি e5 পুশ করবে।\n৭. বোর্ডে পজিশন দ্রুত ওপেন করে দিয়ে স্যাক্রিফিস বা ট্যাকটিকাল সুযোগ খোঁজা।\n৮. কম্পিউটারের ক্যালকুলেশন পাওয়ারকে পরীক্ষা করতে গতিময় খেলা তৈরি করা।\n৯. কাসপারোভ প্রমাণ করেন তিনি কম্পিউটারের ডিফেন্সে ভয় পান না।\n১০. সেন্ট্রাল অ্যাডভান্টেজ ছিনিয়ে নেওয়ার জন্য কাসপারোভের সেরা ট্যাকটিকাল মুভ।" },
-  { move: "exd5", title: "Move 3: exd5 (Deep Blue)", exp: "১. ডিপ ব্লু বাধ্য হয়ে কাসপারোভের d5 পনটি ক্যাপচার বা টেক করে নেয়।\n২. সেন্ট্রাল পন টেনশন দূর করে বোর্ড সাময়িকভাবে ওপেন করা হয়।\n৩. কম্পিউটার জটিল পন স্ট্রাকচার এড়িয়ে সহজ ও পরিষ্কার লাইনে যেতে পছন্দ করে।\n৪. এর ফলে হোয়াইটের c3 পনটি বোর্ডে থেকে যায় যা পরবর্তীতে নাইট বা পন ডেভেলপমেন্টে কাজে দেবে।\n৫. কাসপারোভকে কুইন দিয়ে d5 টেক করতে আমন্ত্রণ জানানো হয়।\n৬. কুইন d5-এ আসলে হোয়াইটের পরবর্তীতে Nf3 ও d4 খেলে টেম্পো জেতার সুযোগ থাকবে।\n৭. কম্পিউটার তার সুনির্দিষ্ট ক্যালকুলেশন দিয়ে নিরাপদ পজিশনে থাকে।\n৮. সেন্ট্রাল ফাইলগুলো ওপেন হওয়ায় রুক ও কুইন অ্যাক্টিভিটি বাড়বে।\n৯. কাসপারোভের আক্রমণকে প্রাথমিক পর্যায়ে প্রতিহত করার উপায়।\n১০. ওপেনিংয়ের প্রথম গুরুত্বপূর্ণ পন বিনিময় সম্পন্ন হলো।" },
-  { move: "Qxd5", title: "Move 3... Qxd5 (Kasparov)", exp: "১. কাসপারোভ কুইন দিয়ে d5 পনটি পুনরায় দখল করে নেন।\n২. কুইন বোর্ডের একেবারে কেন্দ্রে বসে দুর্দান্ত প্রভাব বিস্তার করে।\n৩. যদিও দাবায় শুরুতে কুইন বের করা কিছুটা ঝুঁকিপূর্ণ, এখানে c3 পন থাকায় হোয়াইট Nc3 খেলে কুইনকে সহজে আক্রমণ করতে পারছে না।\n৪. কাসপারোভ বোর্ডের মোমেন্টাম ধরে রাখার চেষ্টা করছেন।\n৫. ব্ল্যাকের পিস ডেভেলপমেন্ট দ্রুত করার একটি উপযুক্ত ক্ষেত্র তৈরি হয়।\n৬. সেন্টারে কুইন থাকা সত্ত্বেও ডিপ ব্লুর তাৎক্ষণিক কোনো আক্রমণ করার পথ নেই।\n৭. পজিশনাল দিক থেকে ব্ল্যাক বেশ আরামদায়ক অবস্থানে পৌঁছে যায়।\n৮. কাসপারোভ কম্পিউটারের সামান্যতম দুর্বলতাকে কাজে লাগাতে প্রস্তুত।\n৯. বোর্ডের মাঝখানে পিস এক্টিভিটি সর্বোচ্চ পর্যায়ে নিয়ে যাওয়ার প্রচেষ্টা।\n১০. অভিজ্ঞ মানব গ্র্যান্ডমাস্টারের নিখুঁত অ্যাক্টিভ কুইন প্লে।" },
-  { move: "d4", title: "Move 4: d4 (Deep Blue)", exp: "১. ডিপ ব্লু অবশেষে d4 পুশ করে বোর্ডের কেন্দ্রে সরাসরি আধিপত্য বিস্তার করে।\n২. c5 এবং d4 পনের মধ্যে টেনশন তৈরি হয়, যা সিগিলিয়ান ডিফেন্সের মূল আকর্ষণ।\n৩. হোয়াইটের ডার্ক-স্কয়ার বিশপের পথ খুলে যায়, যা C4 বা E3 স্কয়ারে যেতে পারবে।\n৪. সেন্ট্রাল স্পেস লাভ করে কম্পিউটার নিজের পিসগুলোকে স্বাধীনভাবে সাজানোর সুযোগ পায়।\n৫. ব্ল্যাকের কুইনের ওপর পরোক্ষ চাপ তৈরি করার একটি কৌশল।\n৬. কাসপারোভকে সিদ্ধান্ত নিতে হবে সে c4 ক্যাপচার করবে নাকি নাইট ডেভেলপ করবে।\n৭. ডিপ ব্লুর অ্যালগোরিদম সেন্ট্রাল কন্ট্রোলকে উচ্চ পয়েন্ট প্রদান করে।\n৮. কিংসাইড ক্যাসলিংয়ের প্রস্তুতি তরান্বিত করা।\n৯. গেমটি এখন ক্লাসিক্যাল ওপেন সেন্টার গেমে রূপ নিচ্ছে।\n১০. কম্পিউটারের সুপরিকল্পিত পজিশনাল অগ্রগতি।" }
+  { move: "e4", title: "Move 1: e4 (Deep Blue)", exp: "১. সুপারকম্পিউটার ডিপ ব্লু বোর্ডের কেন্দ্র দখল করার জন্য কিং'স পন ২ স্কয়ার সামনে বাড়ায়।" },
+  { move: "c5", title: "Move 1... c5 (Kasparov)", exp: "১. কাসপারোভ তার পছন্দের সিগিলিয়ান ডিফেন্স নির্বাচন করেন।" },
+  { move: "c3", title: "Move 2: c3 (Deep Blue)", exp: "১. ডিপ ব্লু আলপিন ভ্যারিয়েশন প্রয়োগ করার সিদ্ধান্ত নেয়।" },
+  { move: "d5", title: "Move 2... d5 (Kasparov)", exp: "১. কাসপারোভ তাৎক্ষণিকভাবে সেন্টারে আঘাত হেনে পাল্টা আক্রমণ শুরু করেন।" },
+  { move: "exd5", title: "Move 3: exd5 (Deep Blue)", exp: "১. ডিপ ব্লু বাধ্য হয়ে কাসপারোভের d5 পনটি ক্যাপচার করে নেয়।" },
+  { move: "Qxd5", title: "Move 3... Qxd5 (Kasparov)", exp: "১. কাসপারোভ কুইন দিয়ে d5 পনটি পুনরায় দখল করে নেন।" },
+  { move: "d4", title: "Move 4: d4 (Deep Blue)", exp: "১. ডিপ ব্লু অবশেষে d4 পুশ করে বোর্ডের কেন্দ্রে সরাসরি আধিপত্য বিস্তার করে।" }
 ];
 
 const DATA = [
   {
+    "name": "Max Lange Attack (Full)",
+    "line": "e4 e5 Nf3 Nc6 Bc4 Nf6 d4 exd4 O-O Bc5 e5 d5 exf6 dxc4 Re1+ Be6 Ng5 Qd5 Nc3 Qf5 Nce4",
+    "variations": ["e4 e5 Nf3 Nc6 Bc4 Nf6 d4 exd4 O-O Bc5 e5 d5 exf6 dxc4 Re1+ Be6 Ng5 Qd5 Nc3 Qf5 Nce4"]
+  },
+  {
     "name": "Légal's Mate (Légal Trap)",
     "line": "e4 e5 Nf3 d6 Bc4 Bg4 Nc3 g6 Nxe5 Bxd1 Bxf7+ Ke7 Nd5#",
-    "variations": [
-      "e4 e5 Nf3 d6 Bc4 Bg4 Nc3 g6 Nxe5 Bxd1 Bxf7+ Ke7 Nd5#",
-      "e4 e5 Nf3 d6 Bc4 Nc6 Nc3 Bg4 h3 Bh5 Nxe5 Bxd1 Bxf7+ Ke7 Nd5#",
-      "e4 e5 Nf3 d6 Bc4 Bg4 Nc3 h6 Nxe5 Bxd1 Bxf7+ Ke7 Nd5#"
-    ]
+    "variations": ["e4 e5 Nf3 d6 Bc4 Bg4 Nc3 g6 Nxe5 Bxd1 Bxf7+ Ke7 Nd5#"]
   },
   {
     "name": "Italian Game — Traxler Counterattack",
     "line": "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 Bc5 Nxf7 Bxf2+ Kxf2 Nxe4+ Ke3 Qh4 Qf3 Nf6 Nxh8 Nd4 Qf1 d5 Bb3 Ng4+ Kd3 Nf2+ Kc3 Ne2+ Qxe2 Qd4#",
-    "variations": [
-      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 Bc5 Nxf7 Bxf2+ Kxf2 Nxe4+ Ke3 Qh4 Qf3 Nf6 Nxh8 Nd4 Qf1 d5 Bb3 Ng4+ Kd3 Nf2+ Kc3 Ne2+ Qxe2 Qd4#",
-      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 Bc5 Bxf7+ Ke7 Bd5 Rf8 O-O d6 c3 Bg4",
-      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 Bc5 Nxf7 Bxf2+ Kf1 Qe7 Nxh8 d5 exd5 Nd4 c3 Bg4 Qa4+ Nd7"
-    ]
-  },
-  {
-    "name": "Italian — Blackburne Shilling Trap",
-    "line": "e4 e5 Nf3 Nc6 Bc4 Nd4 Nxe5 Qg5 Nxf7 Qxg2 Rf1 Qxe4+ Be2 Nf3#",
-    "variations": [
-      "e4 e5 Nf3 Nc6 Bc4 Nd4 Nxe5 Qg5 Nxf7 Qxg2 Rf1 Qxe4+ Be2 Nf3#",
-      "e4 e5 Nf3 Nc6 Bc4 Nd4 Nxe5 Qg5 Bxf7+ Ke7 O-O Qxe5 Bxg8 Rxg8 c3 Ne6",
-      "e4 e5 Nf3 Nc6 Bc4 Nd4 Nxd4 exd4 O-O d6 d3 Nf6"
-    ]
-  },
-  {
-    "name": "Englund Gambit — Queen Trap Checkmate",
-    "line": "d4 e5 dxe5 Nc6 Nf3 Qe7 Bf4 Qb4+ Bd2 Qxb2 Bc3 Bb4 Qd2 Bxc3 Qxc3 Qc1#",
-    "variations": [
-      "d4 e5 dxe5 Nc6 Nf3 Qe7 Bf4 Qb4+ Bd2 Qxb2 Bc3 Bb4 Qd2 Bxc3 Qxc3 Qc1#",
-      "d4 e5 dxe5 Nc6 Nf3 Qe7 Bf4 Qb4+ Bd2 Qxb2 Nc3 Bb4 Rb1 Qa3"
-    ]
-  },
-  {
-    "name": "Italian Game — Fried Liver Attack",
-    "line": "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Nxd5 Nxf7 Kxf7 Qf3+ Ke6 Nc3 Ne7 d4 c6 Bg5 h6 Bxe7 Bxe7 O-O-O",
-    "variations": [
-      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Nxd5 Nxf7 Kxf7 Qf3+ Ke6 Nc3 Ne7 d4 c6 Bg5 h6 Bxe7 Bxe7 O-O-O",
-      "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Na5 Bb5+ c6 dxc6 bxc6 Be2 h6 Nf3 e4 Ne5"
-    ]
+    "variations": ["e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 Bc5 Nxf7 Bxf2+ Kxf2 Nxe4+ Ke3 Qh4 Qf3 Nf6 Nxh8 Nd4 Qf1 d5 Bb3 Ng4+ Kd3 Nf2+ Kc3 Ne2+ Qxe2 Qd4#"]
   }
 ];
 
 let board=[], lesson=null, tokens=[], idx=0, isPlaying=false, selected=null, last=[];
-let currentMode = "tutor"; // tutor, kasparov, playAI, playFriend
-let turn = "W"; // W or B
+let currentMode = "maxLange"; 
+let turn = "W";
 const PIECES={K:"♔",Q:"♕",R:"♖",B:"♗",N:"♘",P:"♙",k:"♚",q:"♛",r:"♜",b:"♝",n:"♞",p:"♟"};
 const files="abcdefgh";
 
@@ -173,77 +165,19 @@ function draw(){
 }
 
 function handleSquareClick(r,c){
-  if(currentMode === "tutor" || currentMode === "kasparov") {
-    if(!selected){
-      if(board[r][c]) { selected=[r,c]; draw(); }
-    } else {
+  if(currentMode !== "playAI"){
+    if(!selected){ if(board[r][c]){ selected=[r,c]; draw(); } }
+    else {
       let [fr,fc]=selected;
       if(fr===r && fc===c){ selected=null; draw(); return; }
-      board[r][c]=board[fr][fc]; board[fr][fc]="";
-      last=[[fr,fc],[r,c]]; selected=null; draw();
-    }
-    return;
-  }
-
-  // Interactive Play Modes (Friend & AI)
-  if(!selected){
-    if(board[r][c]){
-      let p = board[r][c];
-      let isWhite = p === p.toUpperCase();
-      if((turn === "W" && isWhite) || (turn === "B" && !isWhite)){
-        selected = [r,c];
-        draw();
-      }
-    }
-  } else {
-    let [fr,fc]=selected;
-    if(fr===r && fc===c){ selected=null; draw(); return; }
-    
-    board[r][c] = board[fr][fc];
-    board[fr][fc] = "";
-    last = [[fr,fc],[r,c]];
-    selected = null;
-    turn = (turn === "W") ? "B" : "W";
-    draw();
-    document.getElementById("current").textContent = "Turn: " + (turn==="W"?"White (Player)":"Black");
-
-    if(currentMode === "playAI" && turn === "B"){
-      setTimeout(makeAIMove, 500);
+      board[r][c]=board[fr][fc]; board[fr][fc]=""; last=[[fr,fc],[r,c]]; selected=null; draw();
     }
   }
-}
-
-function makeAIMove(){
-  let blackPieces = [];
-  for(let r=0;r<8;r++){
-    for(let c=0;c<8;c++){
-      if(board[r][c] && board[r][c] === board[r][c].toLowerCase()){
-        blackPieces.push([r,c]);
-      }
-    }
-  }
-  if(!blackPieces.length) return;
-  let p = blackPieces[Math.floor(Math.random()*blackPieces.length)];
-  let empty = [];
-  for(let r=0;r<8;r++){
-    for(let c=0;c<8;c++){
-      if(!board[r][c] || board[r][c] === board[r][c].toUpperCase()){
-        empty.push([r,c]);
-      }
-    }
-  }
-  let dest = empty[Math.floor(Math.random()*empty.length)];
-  board[dest[0]][dest[1]] = board[p[0]][p[1]];
-  board[p[0]][p[1]] = "";
-  last = [p, dest];
-  turn = "W";
-  draw();
-  document.getElementById("current").textContent = "Turn: White (Player)";
 }
 
 function stopTimer(){
   isPlaying = false;
-  document.getElementById("play").textContent="▶ Auto Play";
+  document.getElementById("play").textContent="▶ অটো প্লে";
   window.speechSynthesis.cancel();
 }
 
@@ -253,7 +187,7 @@ function resetBoard(){
   last=[];
   selected=null;
   draw();
-  document.getElementById("current").textContent="Move 0";
+  document.getElementById("current").textContent="চাল ০";
 }
 
 function square(s){ return [8-parseInt(s[1]), files.indexOf(s[0])]; }
@@ -267,12 +201,6 @@ function moveToken(t, moveIndex){
     board[row][6] = board[row][4]; board[row][4] = "";
     board[row][5] = board[row][7]; board[row][7] = "";
     return [[row,4],[row,6]];
-  }
-  if(clean==="O-O-O"||clean==="0-0-0"){
-    let row = isWhite ? 7 : 0; 
-    board[row][2] = board[row][4]; board[row][4] = "";
-    board[row][3] = board[row][0]; board[row][0] = "";
-    return [[row,4],[row,2]];
   }
 
   let dest=clean.slice(-2), to=square(dest); 
@@ -316,25 +244,18 @@ function moveToken(t, moveIndex){
   return [from,to];
 }
 
-function speak(t, onEndCallback){
+function speakBangla(text, onEndCallback){
   if(document.getElementById("voice").dataset.off){
     if(onEndCallback) setTimeout(onEndCallback, 600);
     return;
   }
   window.speechSynthesis.cancel();
-  let u=new SpeechSynthesisUtterance(spoken(t));
-  u.rate=0.9; u.lang="en-US";
-  u.onend = () => { if(onEndCallback) setTimeout(onEndCallback, 400); };
-  u.onerror = () => { if(onEndCallback) setTimeout(onEndCallback, 400); };
+  let u = new SpeechSynthesisUtterance(text);
+  u.lang = "bn-BD";
+  u.rate = 0.95;
+  u.onend = () => { if(onEndCallback) setTimeout(onEndCallback, 500); };
+  u.onerror = () => { if(onEndCallback) setTimeout(onEndCallback, 500); };
   window.speechSynthesis.speak(u);
-}
-
-function spoken(t){
-  let s = t.replace(/[+#?!]/g,"");
-  if(s === "O-O" || s === "0-0") return "Castle Kingside";
-  s = s.replace(/x/g," takes ");
-  s = s.replace(/^N/,"Knight ").replace(/^B/,"Bishop ").replace(/^R/,"Rook ").replace(/^Q/,"Queen ").replace(/^K/,"King ");
-  return s;
 }
 
 function renderAt(n){
@@ -347,41 +268,14 @@ function renderAt(n){
   idx=n;
   draw();
   let t=tokens[n-1]||"—";
-  document.getElementById("current").textContent="Move "+n+" / "+tokens.length+(n?" • "+t:"");
+  document.getElementById("current").textContent="চাল "+n+" / "+tokens.length+(n?" • "+t:"");
   
-  if(currentMode === "kasparov" && KASPAROV_GAME[n-1]){
+  let currentArray = (currentMode === "maxLange") ? MAX_LANGE_GAME : (currentMode === "kasparov" ? KASPAROV_GAME : null);
+  if(currentArray && currentArray[n-1]){
     document.getElementById("analysisSection").style.display="block";
-    document.getElementById("analysisTitle").textContent = KASPAROV_GAME[n-1].title;
-    document.getElementById("analysisText").innerHTML = KASPAROV_GAME[n-1].exp.replace(/\n/g, "<br>");
+    document.getElementById("analysisTitle").textContent = currentArray[n-1].title;
+    document.getElementById("analysisText").textContent = currentArray[n-1].exp;
   }
-}
-
-function selectLesson(i){
-  currentMode="tutor";
-  stopTimer();
-  lesson=DATA[i];
-  tokens=lesson.line.trim().split(/\s+/);
-  idx=0;
-  document.getElementById("analysisSection").style.display="none";
-  document.getElementById("aiControls").style.display="none";
-  document.getElementById("title").textContent=lesson.name;
-  document.getElementById("moveLabel").textContent="Lesson: "+lesson.name;
-  document.getElementById("vars").innerHTML=lesson.variations.length
-    ? lesson.variations.map((v,j)=>`<button class="varBtn" data-var="${j}" style="display:block;width:100%;text-align:left;margin:7px 0;padding:9px;border-radius:9px;background:#202d49;color:#fff;border:1px solid #3a4a6c;cursor:pointer"><b>Variation ${j+1}</b><br><span class="muted">${v}</span></button>`).join("")
-    : "Main line only.";
-
-  document.querySelectorAll(".varBtn").forEach((b,j)=>b.onclick=()=>selectVariation(j));
-  document.querySelectorAll(".item").forEach((x,j)=>x.classList.toggle("active",j===i));
-  renderAt(0);
-}
-
-function selectVariation(vIndex){
-  if(!lesson || !lesson.variations || !lesson.variations[vIndex]) return;
-  stopTimer();
-  tokens=lesson.variations[vIndex].trim().split(/\s+/);
-  idx=0;
-  resetBoard();
-  document.getElementById("current").textContent="Variation "+(vIndex+1)+" • Move 0 / "+tokens.length;
 }
 
 function next(autoPlayTriggered = false){
@@ -392,15 +286,18 @@ function next(autoPlayTriggered = false){
     if(mv) last=mv;
     idx++;
     draw();
-    document.getElementById("current").textContent="Move "+idx+" / "+tokens.length+" • "+t;
+    document.getElementById("current").textContent="চাল "+idx+" / "+tokens.length+" • "+t;
 
-    if(currentMode === "kasparov" && KASPAROV_GAME[idx-1]){
+    let currentArray = (currentMode === "maxLange") ? MAX_LANGE_GAME : (currentMode === "kasparov" ? KASPAROV_GAME : null);
+    let voiceText = t;
+    if(currentArray && currentArray[idx-1]){
       document.getElementById("analysisSection").style.display="block";
-      document.getElementById("analysisTitle").textContent = KASPAROV_GAME[idx-1].title;
-      document.getElementById("analysisText").innerHTML = KASPAROV_GAME[idx-1].exp.replace(/\n/g, "<br>");
+      document.getElementById("analysisTitle").textContent = currentArray[idx-1].title;
+      document.getElementById("analysisText").textContent = currentArray[idx-1].exp;
+      voiceText = currentArray[idx-1].title + ". " + currentArray[idx-1].exp;
     }
 
-    speak(t, () => {
+    speakBangla(voiceText, () => {
       if(isPlaying && autoPlayTriggered){ next(true); }
     });
   } else {
@@ -408,43 +305,38 @@ function next(autoPlayTriggered = false){
   }
 }
 
-// Mode Switchers
-document.getElementById("modeTutor").onclick=()=>{
-  currentMode="tutor"; setModeBtn("modeTutor");
-  document.getElementById("analysisSection").style.display="none";
-  document.getElementById("aiControls").style.display="none";
-  if(DATA.length) selectLesson(0);
+// Mode Buttons
+document.getElementById("modeMaxLange").onclick=()=>{
+  currentMode="maxLange"; setModeBtn("modeMaxLange");
+  tokens = MAX_LANGE_GAME.map(g=>g.move);
+  document.getElementById("title").textContent="Max Lange Attack (Part 1 & 2 Complete)";
+  document.getElementById("moveLabel").textContent="Max Lange Attack Full Analysis";
+  renderAt(0);
 };
 
 document.getElementById("modeKasparov").onclick=()=>{
   currentMode="kasparov"; setModeBtn("modeKasparov");
-  document.getElementById("aiControls").style.display="none";
   tokens = KASPAROV_GAME.map(g=>g.move);
-  document.getElementById("title").textContent="Garry Kasparov vs Deep Blue (1996 - Game 1)";
-  document.getElementById("moveLabel").textContent="Kasparov vs Deep Blue Analysis Mode";
+  document.getElementById("title").textContent="Kasparov vs Deep Blue (1996)";
+  document.getElementById("moveLabel").textContent="Kasparov vs Deep Blue";
   renderAt(0);
-  addAI("Kasparov vs Deep Blue match loaded! Click Next or Auto Play to view 10-line explanations per move.");
 };
 
-document.getElementById("modePlayAI").onclick=()=>{
-  currentMode="playAI"; setModeBtn("modePlayAI");
-  resetBoard();
-  document.getElementById("analysisSection").style.display="none";
-  document.getElementById("aiControls").style.display="flex";
-  document.getElementById("moveLabel").textContent="Play against Computer (AI)";
-  document.getElementById("current").textContent="Turn: White (You)";
-  addAI("Game started! Make your move by touching a piece.");
+document.getElementById("modeTutor").onclick=()=>{
+  currentMode="tutor"; setModeBtn("modeTutor");
+  if(DATA.length) selectLesson(0);
 };
 
-document.getElementById("modePlayFriend").onclick=()=>{
-  currentMode="playFriend"; setModeBtn("modePlayFriend");
-  resetBoard();
-  document.getElementById("analysisSection").style.display="none";
-  document.getElementById("aiControls").style.display="none";
-  document.getElementById("moveLabel").textContent="Play vs Friend (Local Pass & Play)";
-  document.getElementById("current").textContent="Turn: White";
-  addAI("Local 2-Player mode active!");
-};
+function selectLesson(i){
+  currentMode="tutor";
+  stopTimer();
+  lesson=DATA[i];
+  tokens=lesson.line.trim().split(/\s+/);
+  idx=0;
+  document.getElementById("title").textContent=lesson.name;
+  document.getElementById("moveLabel").textContent="পাঠ: "+lesson.name;
+  renderAt(0);
+}
 
 function setModeBtn(id){
   document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("active"));
@@ -456,13 +348,13 @@ document.getElementById("prev").onclick=()=>renderAt(Math.max(0,idx-1));
 document.getElementById("reset").onclick=()=>renderAt(0);
 
 document.getElementById("play").onclick=()=>{
-  if(isPlaying){ stopTimer(); } else { isPlaying = true; document.getElementById("play").textContent="⏸ Pause"; next(true); }
+  if(isPlaying){ stopTimer(); } else { isPlaying = true; document.getElementById("play").textContent="⏸ বিরতি"; next(true); }
 };
 
 document.getElementById("voice").onclick=()=>{
   let b=document.getElementById("voice");
   b.dataset.off=b.dataset.off?"":"1";
-  b.textContent=b.dataset.off?"🔇 Voice: OFF":"🔊 Voice: ON";
+  b.textContent=b.dataset.off?"🔇 বাংলা ভয়েস: OFF":"🔊 বাংলা ভয়েস: ON";
 };
 
 function list(q=""){
@@ -488,14 +380,13 @@ document.getElementById("ask").onclick=()=>{
   let x=q.value.trim();
   let d=document.createElement("div"); d.className="msg you"; d.textContent=x;
   document.getElementById("chat").appendChild(d);
-  let ans="এই পাঠ বা ম্যাচের বিষয়ে জানতে ওপরের মোড সিলেক্ট করুন।";
-  addAI(ans); q.value="";
+  addAI("এই চালটি বোঝার জন্য মোড সিলেক্ট করে পরবর্তী বাটন চাপুন।"); q.value="";
 };
 
 start();
 draw();
 list();
-if(DATA.length) selectLesson(0);
+document.getElementById("modeMaxLange").click();
 </script>
 </body>
 </html>
